@@ -19,5 +19,5 @@ Use this section to explain the structure of your repo. This should help visitor
 Be sure to list where you got any data used within the project. Be sure to acknowledge any one whose work or elements you're drawing upon.
 
 ## Authors
-
+Will Bolger: wdb5169@psu.edu
 Give information about who are the authors of the project and how people can get in touch if they have questions.
