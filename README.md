@@ -20,4 +20,5 @@ Be sure to list where you got any data used within the project. Be sure to ackno
 
 ## Authors
 Will Bolger: wdb5169@psu.edu
+
 Give information about who are the authors of the project and how people can get in touch if they have questions.
