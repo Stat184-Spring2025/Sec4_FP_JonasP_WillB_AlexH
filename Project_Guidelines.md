@@ -41,8 +41,8 @@ We present the guidelines as a checklist in this file. This means that your team
 - [x] Make sure that each team member has access to the repo.
 - [x] Come up with a topic and set of research questions your team will explore.
 - [ ] Make a plan for your work. We suggested putting together your work plan ASAP.
-- [ ] Locate appropriate data sources for your project.
-  - [ ] Your main data source may __not__ be one that we used in class. If you are interested in using data found in an R package, please consult with your instructor first.
+- [x] Locate appropriate data sources for your project.
+  - [x] Your main data source may __not__ be one that we used in class. If you are interested in using data found in an R package, please consult with your instructor first.
   - [ ] Supplementary data sources may come from anywhere.
 - [ ] Read in your data and perform any necessary data tidying, wrangling, and cleaning.
 - [ ] Conduct Exploratory Data Analysis.
