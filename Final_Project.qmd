@@ -8,9 +8,9 @@ editor: visual
 
 ## Research exploration
 
-### Frecuency table
+### Frequency table
 
-### Frecuency graphs
+### Frequency graphs
 
 ## Main Analysis
 
@@ -18,7 +18,7 @@ editor: visual
 
 ### Data analysis
 
-### Suporting research
+### Supporting research
 
 ### Conclusion
 
@@ -31,6 +31,3 @@ editor: visual
 ## Open Science process
 
 ## Citations
-
-
-
