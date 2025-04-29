@@ -1,0 +1,36 @@
+---
+title: "Final Project"
+format: pdf
+editor: visual
+---
+
+## Introduction
+
+## Research exploration
+
+### Frecuency table
+
+### Frecuency graphs
+
+## Main Analysis
+
+### Hypothesis
+
+### Data analysis
+
+### Suporting research
+
+### Conclusion
+
+## Data Information
+
+### Main Data Set
+
+### Secondary Data Set
+
+## Open Science process
+
+## Citations
+
+
+
