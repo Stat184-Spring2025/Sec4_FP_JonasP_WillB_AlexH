@@ -1,0 +1,53 @@
+---
+title: "Final Project"
+format: pdf
+editor: visual
+---
+
+## Introduction
+
+## Exploratory data Analyis
+
+### Frequency table
+
+### Frequency graphs
+
+## Main Analysis
+
+### Hypothesis
+
+### Data analysis
+
+### Further research? (hypothesis testing, regression, ANOVA, or machine learning)
+
+\
+
+### Supporting research
+
+### Conclusion
+
+## Data Information
+
+### Main Data Set
+
+1.  Data Tidying
+
+2.  Data Wrangling
+
+3.  Data Cleaning
+
+### Secondary Data Set
+
+1.  Data Tidying
+
+2.  Data Wrangling
+
+3.  Data Cleaning
+
+### Fair and Care Principles
+
+## Open Science process
+
+## Code Apendix
+
+## Citations
