@@ -60,7 +60,11 @@ We present the guidelines as a checklist in this file. This means that your team
 
         ````         
           ```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+<<<<<<< Updated upstream
         ```
+=======
+            ```
+>>>>>>> Stashed changes
         ````
 
     -   [ ] Describe the provenance of your data. That is, where did you get the data, who collected the data, for what purpose, who/what make up the cases.
