@@ -4,6 +4,7 @@ format: pdf
 editor: visual
 ---
 
+
 ```{r}
 #| label: load_packages
 # Load necessary packages ----
@@ -28,6 +29,8 @@ student_raw <-  read.csv(
 student_4 <- student_raw %>%
   mutate(Grades = Grades * (4/10)) 
 ```
+
+=======
 
 ## Introduction
 
