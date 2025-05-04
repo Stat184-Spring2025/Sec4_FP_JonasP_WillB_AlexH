@@ -4,6 +4,34 @@ format: pdf
 editor: visual
 ---
 
+
+```{r}
+#| label: load_packages
+# Load necessary packages ----
+library(ggplot2)
+library(dplyr)
+library(knitr)
+library(tinytex)
+library(tidyverse)
+# Google R style guide used
+```
+
+```{r}
+#| label: load_data
+student_raw <-  read.csv(
+  "https://raw.githubusercontent.com/Stat184-Spring2025/Sec4_FP_JonasP_WillB_AlexH/refs/heads/main/student_lifestyle_dataset..csv",
+  sep = ","
+)
+```
+
+```{r}
+#| label: GPA to 4.0 scale
+student_4 <- student_raw %>%
+  mutate(Grades = Grades * (4/10)) 
+```
+
+=======
+
 ## Introduction
 
 ## Exploratory data Analyis
