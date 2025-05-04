@@ -1,8 +1,12 @@
 # Project Title
 
+The goal of our repo is to determine the impact of time spent doing certain kinds of activities and stress has on a students cumulative GPA.
+
 Write a 1-2 sentences that quickly and clearly convey what your repo is for.
 
 ## Overview
+
+Our project looks at the variables of time spent studying, sleeping, being social, doing physical activity, extracurricular activities, and a students reported level of stress, and see if any of them have a strong correlation on the resulting cumulative GPA of a given student.
 
 Expand on those introductory sentences with a brief but informative description of your project's purpose and goals. This section should help visitors decide whether they should dig deeper into your repo/project.
 
@@ -19,5 +23,6 @@ Use this section to explain the structure of your repo. This should help visitor
 Be sure to list where you got any data used within the project. Be sure to acknowledge any one whose work or elements you're drawing upon.
 
 ## Authors
+Will Bolger: wdb5169@psu.edu
 
 Give information about who are the authors of the project and how people can get in touch if they have questions.
