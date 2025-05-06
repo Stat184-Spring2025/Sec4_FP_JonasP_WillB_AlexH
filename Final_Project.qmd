@@ -1,7 +1,17 @@
 ---
-title: "Final Project"
-format: pdf
+title: "Student Lifestyle Factors and their Effects"
+author: "Jonas Priolo, Will Bolger, Alex Herraiz Sen"
 editor: visual
+date: "April 25, 2025"
+date-modified: now
+format: pdf
+bibliography: references.bib
+nocite: |
+  @*
+csl: MLA9.csl
+execute:
+  echo: false
+  warning: false
 ---
 
 ```{r}
@@ -200,7 +210,7 @@ ggplot(mental_health_clean, aes(x = stress_level, fill = as.factor(waiver_or_sch
 The following visualizations we will create two plots for each mental health disorder we analyse. One visualization will include the data for students enrolled in the computer science/ computer engineering major and one will not include the data. The reason for this is due to the data set we used had a majority of students enrolled as that major and generating two visualizations allows us to better analyse and comment on the data.
 
 ```{r}
-student_no_CS <- student_clean %>%
+student_no_CS <- mental_health_clean %>%
   filter(major != "Computer Science/Engineering")
 ```
 
