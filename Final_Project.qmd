@@ -949,8 +949,7 @@ Supporting data drawn from the secondary dataset provided additional insights in
 In summary, this research demonstrates that while certain lifestyle factors—especially study time—have a direct and measurable impact on GPA, they also correlate with elevated stress levels. The coexistence of strong academic performance and psychological strain indicates that academic success may come at a psychological cost for some students. By employing both inferential statistics and targeted post-hoc analyses, this study provides evidence-based insights into the behavioral determinants of student outcomes. These results highlight the need for academic institutions to consider how behavioral expectations intersect with mental health, and to design policies and interventions that support both performance and well-being.
 
 ## Code Appendix
-
-## Citations
-
 ```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
+## Citations
+
