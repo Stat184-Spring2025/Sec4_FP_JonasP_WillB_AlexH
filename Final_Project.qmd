@@ -51,7 +51,7 @@ student_4 <- student_raw %>%
 
 ## Research Topic: Student Lifestyle Factors and their Effects
 
-This research focuses on Student lifestyle trends and their effects on things such as their grades and stress levels. With depression and anxiety rates being at all time highs and finals week just around the corner this subject is not only relevant to society but to everyone in our group/class. Our research revolves around gaining a better understanding on what effects student outcomes such as stress and gpa pertaining to a students daily study hours, extracurricular hours, sleep hours, social hours, and physical activity. Via researching our topic in depth, mapping our data in data sets, and by utilizing data visualizations we can explore the relations between our key attributes and student well being. Our goal is to increase our understanding of the effects of different lifestyle factors and how much they affect our lives as well as presenting our research in a way our reader could deepen their own knowledge for this topic.
+This research focuses on Student lifestyle trends and their effects on things such as their grades and stress levels. With depression and anxiety rates being at all time highs and finals week just around the corner this subject is not only relevant to society but to everyone in our group/class. Our research revolves around gaining a better understanding on what effects student outcomes such as stress and GPA pertaining to a students daily study hours, extracurricular hours, sleep hours, social hours, and physical activity. Via researching our topic in depth, mapping our data in data sets, and by utilizing data visualizations we can explore the relations between our key attributes and student well being. Our goal is to increase our understanding of the effects of different lifestyle factors and how much they affect our lives as well as presenting our research in a way our reader could deepen their own knowledge for this topic.
 
 ## Research Questions
 
@@ -59,7 +59,7 @@ The first research question we will explore is how different lifestyle factors, 
 
 ## Provenance Of Our Data
 
-The data sets we are using came from the Website Kaggle, a data science website that offers open source resources and data sets with the goal to help others learn more about data. The author of our first and primary data set is Charlotte Bennett. The author describes there data as a “detailed view of student lifestyle patterns and their correlation with academic performance, represented by GPA.” The data contains detailed student survey data across a variety of student lifestyle factors, student demographics, and academic outcomes. This data was last updated 21 days ago and was sourced from a Google Form survey focusing on students across different educational institutions, primarily focusing on those in India and other South Asian countries. All in all there were 2000 voluntary participants for the survey used in the data set and the respondents were informed that the data would be used for educational purposes only. No personally identifiable information was collected for the data set. In this dataset, a case is an individual student. The dataset includes the attributes of Student ID, Study Hours per Day, Extracurricular Hours per Day, Sleep Hours Hours per Day, Social Hours per Day, Physical Activity Hours per Day, Stress Level, Gender, And Grades (CGPA). For this data set we will touch upon all of these attributes. For this data set we intend on converting the ten point GPA scale provided in the dataset, which is the standard grading scale in India and South Asia, to the four point GPA scale we are more familiar with.
+The data sets we are using came from the Website Kaggle, a data science website that offers open source resources and data sets with the goal to help others learn more about data. The author of our first and primary data set is Charlotte Bennett. The author describes there data as a “detailed view of student lifestyle patterns and their correlation with academic performance, represented by GPA.” The data contains detailed student survey data across a variety of student lifestyle factors, student demographics, and academic outcomes. This data was last updated 21 days ago and was sourced from a Google Form survey focusing on students across different educational institutions, primarily focusing on those in India and other South Asian countries. All in all there were 2000 voluntary participants for the survey used in the data set and the respondents were informed that the data would be used for educational purposes only. No personally identifiable information was collected for the data set. In this data set, a case is an individual student. The data set includes the attributes of Student ID, Study Hours per Day, Extracurricular Hours per Day, Sleep Hours Hours per Day, Social Hours per Day, Physical Activity Hours per Day, Stress Level, Gender, And Grades (CGPA). For this data set we will touch upon all of these attributes. For this data set we intend on converting the ten point GPA scale provided in the data set, which is the standard grading scale in India and South Asia, to the four point GPA scale we are more familiar with.
 
 Our second and supplementary data set also originates from Figshare. The author of this data set is Mahbubul and he describes the data set as “a statistical research on the effects of mental health.” The data for this set was collected via survey form from students studying at the top 15 ranked universities in Bangladesh. The data set includes the attributes of a age, gender, University, major, academic year, GPA, scholarship status, answers to survey questions, student stress levels, student anxiety levels, and student depression levels. For this data set we are primarily interested in the students major, there scholarship status, and there stress level.
 
@@ -67,9 +67,147 @@ Our second and supplementary data set also originates from Figshare. The author 
 
 The data we are utilizing meets the CARE principles. The data can be used for the Collective benefit because it allows for us to identify what are the main factors that contribute to student well being. When properly analyzed as a society we can improve student resources and improve student mental health. This data meets the Authority to control because the data was collected via an optional survey. This means that participants had the autonomy to choose whether or not to share their experiences, ensuring respect for an individual's data and consent. The data aligns with Responsibility because it emphasizes the ethical use for this information such as prioritizing student welfare and protecting student privacy. Lastly this data is ethical with it promoting equity and positive change with its ability to inform policies to support student well-being.
 
+## Main Data Set
+1.  Data Tidying
+
+For our main data set, it was already tidy, and didn't require any changes to it. Each row was considered a single case, with each case being a student. Each column represented a single variable, with no cell containing multiple data points. The variables in this case was student id, study hours per day, extracurricular activity per day, sleep hours per day, social hours per day, physical activity hours per day, reported stress level, their gender, and their GPA.
+
+2.  Data Wrangling
+
+For data wrangling, we did reshape the data to make it more understandable to US audiences. In the US, the primary GPA scale is a 4 point scale, while our data was in a 10 point scale. We converted it into a 4 point scale by multiplying it by 0.4.
+
+```{r}
+#| label: GPA to 4.0 scale for primary dataset
+#Converts the provided 10 point GPA scale to a 4 point scale for the primary data set
+student_4 <- student_raw %>%
+  mutate(Grades = Grades * (4/10)) 
+```
+
+3.  Data Cleaning
+
+There was no data cleaning required as there were no missing values, no incorrect values, and no duplicates among the data set. BY summing the duplicate function on our data set, we can see that there are no duplicates.
+
+```{r}
+#| label: Proof of no duplicates
+sum(duplicated(student_4))
+```
+
+
+
 ## Exploratory Data Analysis
 
 Before creating any data visualizations, we created a frequency that alalyise a series of statistics to better understand the relation between student stress levels and a students grades. @tbl-student_stress_summary shows a summary table that includes *count*, *minimum*, *Q1*, *median*, *Q3*, *maximum*, *median absolute deviation*, *mean*, and *standard deviation* for every stress level and student GPA. We are interested in using this data to gain a better understanding of student stress and its impacts and we thought that a students GPA was a good metric to start with.
+
+### Scatter Plot Matricies
+
+We created two different scatter plot matrices to help us get a baseline overview of the data to help us better understand what we were analyzing. We took out three columns from the original data set, as they would not give valuable information in these visualizations. These three were the student id, gender, and GPA. We took out student id as it is a number assigned to each student and has no impact on any of the other variables. Next, we used gender and stress level to create 2 different scatter plot matrices as they were both categorical data, and would be unhelpful to directly graph against continuous data. After eliminating those three variables, we plotted the other variables of study hours per day, extracurricular hours per day, sleep hours per day, social hours per day, physical activity hours per day, and the students GPA on a 4.0 scale.
+
+```{r}
+#| label: scatter-plot-stress-matrix
+#| fig-cap: "Scatter plot matrix with stress level"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Scatter plot matrix with colors based on stress level"
+#| lst-label: lst-scatter-plot-matrix-stress
+#| lst-cap: "Code Chunk for Scatter Plot Matrix with Stress"
+# Remove Student_ID column
+students_scatter_matrix <- student_4 %>%
+  subset(, select = -c(Student_ID))
+# Define colors
+my_cols <- c("Blue", "Red", "dark Green")
+
+#Rename labels
+students_scatter_matrix <- students_scatter_matrix %>%
+  rename(
+    Study = Study_Hours_Per_Day,
+    Extracurricular = Extracurricular_Hours_Per_Day,
+    Sleep = Sleep_Hours_Per_Day,
+    Social = Social_Hours_Per_Day,
+    Physical_Activity = Physical_Activity_Hours_Per_Day,
+    GPA = Grades
+  )
+
+# Make Stress_Level a factor
+students_scatter_matrix$Stress_Level <- as.factor(students_scatter_matrix$Stress_Level)
+
+# Create a color map
+color_map <- setNames(
+  my_cols[
+    1:length(
+      levels(
+  students_scatter_matrix$Stress_Level
+  ))],
+  levels(
+    students$Stress_Level
+    ))
+
+# Plot Stress_Level as colors and without Gender 
+plot(
+  subset(
+    students_scatter_matrix, 
+    select = -c(Gender, Stress_Level)
+    ),
+  pch = ".",
+  col = color_map[students_scatter_matrix$Stress_Level],
+)
+```
+
+For this first scatter plot matrix, the different colored points represents the different stress levels reported by the students. The green points represent those with a reported high stress, red with a reported moderate stress level, and blue representing a reported low stress level. 
+
+```{r}
+#| label: scatter-plot-gender-matrix
+#| fig-cap: "Scatter plot matrix with Gender"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Scatter plot matrix with colors based on Gender"
+#| lst-label: lst-scatter-plot-matrix-gender
+#| lst-cap: "Code Chunk for Scatter Plot Matrix with Gender"
+# Remove Student_ID column
+students_scatter_matrix <- student_4 %>%
+  subset(, select = -c(Student_ID))
+# Define colors
+my_cols <- c("Red", "Blue")
+
+#Rename labels
+students_scatter_matrix <- students_scatter_matrix %>%
+  rename(
+    Study = Study_Hours_Per_Day,
+    Extracurricular = Extracurricular_Hours_Per_Day,
+    Sleep = Sleep_Hours_Per_Day,
+    Social = Social_Hours_Per_Day,
+    Physical_Activity = Physical_Activity_Hours_Per_Day,
+    GPA = Grades
+  )
+
+# Make Stress_Level a factor
+students_scatter_matrix$Gender <- as.factor(students_scatter_matrix$Gender)
+
+# Create a color map
+color_map <- setNames(
+  my_cols[
+    1:length(
+      levels(
+  students_scatter_matrix$Gender
+  ))],
+  levels(
+    students$Gender
+    )
+  )
+
+# Plot Gender as colors and without Stress_Level
+plot(
+  subset(
+    students_scatter_matrix, 
+    select = -c(Gender, Stress_Level)
+    ),
+  pch = ".",
+  col = color_map[students_scatter_matrix$Gender],
+)
+```
+
+For the second scatter plot matrix, we mapped the color to the gender of each student in the data set. Each blue point represents a blue student and each red point represents a female student. This was done to help meet CARE principles. We wanted to make sure that there was not only an even representation of male and females, but that it also wasn't skewed in any particular way that would lead to results that could be interpreted as sexist against either gender.
+
+In these scatter plots, we noticed a noticeable possible relation between the variables with the GPA and stress. Study hours and physical activity have the strongest visible relation with grades. An increase in stress seemingly occurs with an increase of the hours spent studying, doing physical activity, being social, and physical activity, while the decrease of sleep hours also increases stress.
 
 ### Frequency table
 
@@ -136,7 +274,7 @@ ggplot(
   theme_minimal()
 ```
 
-The Box and Whisker plot @gpa-stress_plot allows us to confirm what we learned about the relationship between a students stress level and there GPA from our summery table. The plot visuly displays the distributions for each stress level by showing the median, upper and lower quartiles, and any outlier points. From this plot we are able to able to verify that studends with higher levels of stress tend to have higher GPAs, while those with lower stress levels tend to have lower GPAs. This reinforces the positive relation observed in the data.
+The Box and Whisker plot @gpa-stress_plot allows us to confirm what we learned about the relationship between a students stress level and there GPA from our summery table. The plot visually displays the distributions for each stress level by showing the median, upper and lower quartiles, and any outlier points. From this plot we are able to able to verify that students with higher levels of stress tend to have higher GPAs, while those with lower stress levels tend to have lower GPAs. This reinforces the positive relation observed in the data.
 
 ## Main Analysis
 
@@ -363,19 +501,12 @@ ggplot(student_no_CS, aes(x = major, fill = anxiety_level)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-From @major-anxiety_plot and @no-cs-anxiety_plot we are able to learn how a students major effects there anxiety level. From this graphic we are able to see that for the majority of majors a plurality of students have severe anxiety. The two majors with the highest levels of severe anxiety were civil engineering and electrical engineering. This relation show there being a greater relation between a students stress and there anxiety compared to a students stress and depression or there anxiety and depression. Another interesting observation is that students studding Environmental and Life Sciences are the only group who has multiple levels of measured anxiety to have higher levels of moderate anxiety compared to severe anxiety. From this knowledge we potentionaly apply what students do for that major towards majors with higher levels of anxiety.
+From @major-anxiety_plot and @no-cs-anxiety_plot we are able to learn how a students major effects there anxiety level. From this graphic we are able to see that for the majority of majors a plurality of students have severe anxiety. The two majors with the highest levels of severe anxiety were civil engineering and electrical engineering. This relation show there being a greater relation between a students stress and there anxiety compared to a students stress and depression or there anxiety and depression. Another interesting observation is that students studding Environmental and Life Sciences are the only group who has multiple levels of measured anxiety to have higher levels of moderate anxiety compared to severe anxiety. From this knowledge we potentially apply what students do for that major towards majors with higher levels of anxiety.
 
 ### Conclusion
 
 ## Data Information
 
-### Main Data Set
-
-1.  Data Tidying
-
-2.  Data Wrangling
-
-3.  Data Cleaning
 
 ### Secondary Data Set
 
@@ -392,3 +523,127 @@ From @major-anxiety_plot and @no-cs-anxiety_plot we are able to learn how a stud
 ## Code Apendix
 
 ## Citations
+
+```{r}
+#| label: social-GPA-residual-plot
+#| fig-cap: "Social hours and GPA residuals Plot"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Residuals plot showing the residuals vs. fitted values of each students social hours and GPA"
+#| lst-label: lst-stress
+#| lst-cap: "Code Chunk for residuals social hours"
+
+#create a linear model for social hours compared to GPA
+linear_model_social <- lm(
+  Grades ~ Social_Hours_Per_Day, 
+  data = student_4
+  )
+#create a residual data frame with social hours compared to GPA
+residual_data_frame <- data.frame(
+  Fitted = fitted(linear_model_social),
+  Residuals = resid(linear_model_social)
+)
+
+# Plot residuals vs fitted values
+ggplot(
+  residual_data_frame, 
+  aes(
+    x = Fitted, 
+    y = Residuals
+    )
+  ) +
+  geom_point(
+    color = "red"
+    ) +
+  labs(
+    title = "Residual Plot for Social Hours vs Grades",
+    x = "Fitted Values (Predicted GPA)",
+    y = "Residuals"
+  ) +
+  theme_bw()
+```
+
+This residual plot shows the residual vs. fitted values(predicted GPA) of each point in the data set. This particular residual plot compares the social hours and the resulting predicted GPA. As seen in the graph, there is a plus-minus range of about 0.75 in the residuals compared to the increase in GPA, with the 0 value for the residuals being the line of best fit.
+
+```{r}
+#| label: physical-GPA-residual-plot
+#| fig-cap: "Physical activity hours and GPA residuals Plot"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Residuals plot showing the residuals vs. fitted values of each students physical activity hours and GPA"
+#| lst-label: lst-stress
+#| lst-cap: "Code Chunk for residuals physical activity hours"
+
+#create a linear model for physical activity hours compared to GPA
+linear_model_physical <- lm(
+  Grades ~ Physical_Activity_Hours_Per_Day, 
+  data = student_4
+  )
+#create a residual data frame for physical activity hours compared to GPA
+residual_data_frame <- data.frame(
+  Fitted = fitted(linear_model_physical),
+  Residuals = resid(linear_model_physical)
+)
+
+# Plot residuals vs fitted values
+ggplot(
+  residual_data_frame, 
+  aes(
+    x = Fitted, 
+    y = Residuals
+    )
+  ) +
+  geom_point(
+    color = "red"
+    ) +
+  labs(
+    title = "Residual Plot for Physical Activity vs Grades",
+    x = "Fitted Values (Predicted GPA)",
+    y = "Residuals"
+  ) +
+  theme_bw()
+```
+
+This residual plot shows the residual vs. fitted values(predicted GPA) of each point in the data set. This particular residual plot compares the physical activity hours and the resulting predicted GPA. As seen in the graph, there is a plus-minus range of about 0.75 in the residuals compared to the increase in GPA, with the 0 value for the residuals being the line of best fit.
+
+```{r}
+#| label: study-GPA-residual-plot
+#| fig-cap: "Study hours and GPA residuals Plot"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Residuals plot showing the residuals vs. fitted values of each students study hours and GPA"
+#| lst-label: lst-stress
+#| lst-cap: "Code Chunk for residuals study hours"
+
+#Create a linear model for study hours compared to GPA
+linear_model_study <- lm(
+  Grades ~ Study_Hours_Per_Day, 
+  data = student_4
+  )
+
+#Create a residual data frame for study hours compared to GPA
+residual_data_frame <- data.frame(
+  Fitted = fitted(linear_model_study),
+  Residuals = resid(linear_model_study)
+)
+
+# Plot residuals vs fitted values
+ggplot(
+  residual_data_frame, 
+  aes(
+    x = Fitted, 
+    y = Residuals
+    )
+  ) +
+  geom_point(
+    color = "red"
+    ) +
+  labs(
+    title = "Residual Plot for Study Hours vs Grades",
+    x = "Fitted Values (Predicted GPA)",
+    y = "Residuals"
+  ) +
+  theme_bw()
+```
+
+This residual plot shows the residual vs. fitted values(predicted GPA) of each point in the data set. This particular residual plot compares the study hours and the resulting predicted GPA. As seen in the graph, there is a plus-minus range of about 0.6 in the residuals compared to the increase in GPA, with the 0 value for the residuals being the line of best fit.
