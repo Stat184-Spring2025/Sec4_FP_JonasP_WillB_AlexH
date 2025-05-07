@@ -1,6 +1,6 @@
 ---
 title: "Student Lifestyle Factors and their Effects"
-author: "Jonas Priolo, Will Bolger, Alex Herraiz Sen"
+author: "Jonas Priolo, Will Bolger, Alejandro Herraiz Sen"
 editor: visual
 date: "April 25, 2025"
 date-modified: now
@@ -22,6 +22,11 @@ library(dplyr)
 library(knitr)
 library(tinytex)
 library(tidyverse)
+library(tibble)
+library(broom)
+library(purrr)
+library(kableExtra)
+
 # Google R style guide used
 ```
 
@@ -41,13 +46,13 @@ mental_health_raw <- read.csv(
 ```
 
 ```{r}
-#| label: GPA to 4.0 scale for primary dataset
+#| label: GPA to 4.0 scale 
 #Converts the provided 10 point GPA scale to a 4 point scale for the primary dataset
 student_4 <- student_raw %>%
   mutate(Grades = Grades * (4/10)) 
 ```
 
-# \## Introduction
+# Introduction
 
 ## Research Topic: Student Lifestyle Factors and their Effects
 
@@ -68,6 +73,7 @@ Our second and supplementary data set also originates from Figshare. The author 
 The data we are utilizing meets the CARE principles. The data can be used for the Collective benefit because it allows for us to identify what are the main factors that contribute to student well being. When properly analyzed as a society we can improve student resources and improve student mental health. This data meets the Authority to control because the data was collected via an optional survey. This means that participants had the autonomy to choose whether or not to share their experiences, ensuring respect for an individual's data and consent. The data aligns with Responsibility because it emphasizes the ethical use for this information such as prioritizing student welfare and protecting student privacy. Lastly this data is ethical with it promoting equity and positive change with its ability to inform policies to support student well-being.
 
 ## Main Data Set
+
 1.  Data Tidying
 
 For our main data set, it was already tidy, and didn't require any changes to it. Each row was considered a single case, with each case being a student. Each column represented a single variable, with no cell containing multiple data points. The variables in this case was student id, study hours per day, extracurricular activity per day, sleep hours per day, social hours per day, physical activity hours per day, reported stress level, their gender, and their GPA.
@@ -92,15 +98,15 @@ There was no data cleaning required as there were no missing values, no incorrec
 sum(duplicated(student_4))
 ```
 
-
-
-## Exploratory Data Analysis
+# Exploratory Data Analysis
 
 Before creating any data visualizations, we created a frequency that alalyise a series of statistics to better understand the relation between student stress levels and a students grades. @tbl-student_stress_summary shows a summary table that includes *count*, *minimum*, *Q1*, *median*, *Q3*, *maximum*, *median absolute deviation*, *mean*, and *standard deviation* for every stress level and student GPA. We are interested in using this data to gain a better understanding of student stress and its impacts and we thought that a students GPA was a good metric to start with.
 
-### Scatter Plot Matricies
+## Scatter Plot Matrices
 
 We created two different scatter plot matrices to help us get a baseline overview of the data to help us better understand what we were analyzing. We took out three columns from the original data set, as they would not give valuable information in these visualizations. These three were the student id, gender, and GPA. We took out student id as it is a number assigned to each student and has no impact on any of the other variables. Next, we used gender and stress level to create 2 different scatter plot matrices as they were both categorical data, and would be unhelpful to directly graph against continuous data. After eliminating those three variables, we plotted the other variables of study hours per day, extracurricular hours per day, sleep hours per day, social hours per day, physical activity hours per day, and the students GPA on a 4.0 scale.
+
+For this first scatter plot matrix, the different colored points represents the different stress levels reported by the students. The green points represent those with a reported high stress, red with a reported moderate stress level, and blue representing a reported low stress level.
 
 ```{r}
 #| label: scatter-plot-stress-matrix
@@ -114,7 +120,7 @@ We created two different scatter plot matrices to help us get a baseline overvie
 students_scatter_matrix <- student_4 %>%
   subset(, select = -c(Student_ID))
 # Define colors
-my_cols <- c("Blue", "Red", "dark Green")
+my_cols <- c("dark green", "red", "blue")
 
 #Rename labels
 students_scatter_matrix <- students_scatter_matrix %>%
@@ -138,7 +144,7 @@ color_map <- setNames(
   students_scatter_matrix$Stress_Level
   ))],
   levels(
-    students$Stress_Level
+    students_scatter_matrix$Stress_Level
     ))
 
 # Plot Stress_Level as colors and without Gender 
@@ -152,7 +158,7 @@ plot(
 )
 ```
 
-For this first scatter plot matrix, the different colored points represents the different stress levels reported by the students. The green points represent those with a reported high stress, red with a reported moderate stress level, and blue representing a reported low stress level. 
+For this first scatter plot matrix, the different colored points represents the different stress levels reported by the students. The dark green points represent those with a reported high stress, red with a reported moderate stress level, and blue representing a reported low stress level.
 
 ```{r}
 #| label: scatter-plot-gender-matrix
@@ -190,7 +196,7 @@ color_map <- setNames(
   students_scatter_matrix$Gender
   ))],
   levels(
-    students$Gender
+    students_scatter_matrix$Gender
     )
   )
 
@@ -209,7 +215,7 @@ For the second scatter plot matrix, we mapped the color to the gender of each st
 
 In these scatter plots, we noticed a noticeable possible relation between the variables with the GPA and stress. Study hours and physical activity have the strongest visible relation with grades. An increase in stress seemingly occurs with an increase of the hours spent studying, doing physical activity, being social, and physical activity, while the decrease of sleep hours also increases stress.
 
-### Frequency table
+## Frequency table
 
 ```{r}
 #| label: tbl-student_stress_summary
@@ -247,7 +253,7 @@ student_stress_summary %>%
 
 From the summery table we can get a better understanding of the data we are working with. If we look at the *count* column we can see that the highest stress level among students is High, followed by Moderate, then low. It was also interesting to see how stress level impacted the various statistics in relation to a students GPA. From the table we were able to find out that there is a relation between a students stress level and GPA with higher levels of stress being related to higher GPAs. We also found it interesting how students with low stress typically had lower GPAs, signaling that caring about your grades makes you more stressed and vice versa.
 
-### Frequency graphs
+## Frequency graphs
 
 ```{r}
 #| label: gpa-stress_plot
@@ -276,17 +282,442 @@ ggplot(
 
 The Box and Whisker plot @gpa-stress_plot allows us to confirm what we learned about the relationship between a students stress level and there GPA from our summery table. The plot visually displays the distributions for each stress level by showing the median, upper and lower quartiles, and any outlier points. From this plot we are able to able to verify that students with higher levels of stress tend to have higher GPAs, while those with lower stress levels tend to have lower GPAs. This reinforces the positive relation observed in the data.
 
-## Main Analysis
+# Main Analysis
 
-### Hypothesis
+## Hypothesis
 
-### Data analysis
+This study examines how different aspects of students’ daily routines, specifically the amount of time dedicated to studying, sleep duration, physical activity, social interaction, and participation in extracurricular activities, are associated with both self-reported stress levels and academic performance as measured by GPA. To drive the analysis, the following detailed hypotheses are proposed:
 
-### Further research? (hypothesis testing, regression, ANOVA, or machine learning)
+1.  Stress Level and GPA
 
-\
+    -   H0: The mean GPA is equal across all stress categories (Low, Moderate, High).
 
-### Supporting research
+    -   H1: The mean GPA differs across stress categories.
+
+2.  Study Hours
+
+    -   H0 (gpa): There is no linear relationship between daily study hours and GPA .
+
+    -   H1 (gpa): Daily study hours are correlated with GPA .
+
+    -   H0 (stress): Mean daily study hours are equal across stress categories.
+
+    -   H1 (stress): Mean daily study hours differ across stress categories.
+
+3.  Sleep Duration
+
+    -   H0 (gpa): There is no linear relationship between sleep hours and GPA .
+
+    -   H1 (gpa): Sleep hours are correlated with GPA .
+
+    -   H0 (stress): Mean sleep hours are equal across stress categories
+
+    -   H1 (stress): Mean sleep hours differ across stress categories.
+
+4.  Physical Activity
+
+    -   H0 (gpa): No correlation between physical activity hours and GPA .
+
+    -   H1 (gpa): Physical activity hours are correlated with GPA .
+
+    -   H0 (stress): Mean physical activity hours are equal across stress categories.
+
+    -   H1 (stress): Mean physical activity hours differ across stress categories.
+
+5.  Social Engagement
+
+    -   H0 (gpa): No correlation between social hours and GPA.
+
+    -   H1 (gpa): Social hours are correlated with GPA.
+
+    -   H0 (stress): Mean social hours are equal across stress categories.
+
+    -   H1 (stress): Mean social hours differ across stress categories.
+
+6.  Extracurricular Involvement
+
+    -   H0 (gpa): No linear association between extracurricular hours and GPA.
+
+    -   H1 (gpa): Extracurricular hours are correlated with GPA.
+
+    -   H0 (stress): Mean extracurricular hours are equal across stress categories.
+
+    -   H1 (stress): Mean extracurricular hours differ across stress categories.
+
+7.  Anxiety
+
+    -   H0: Mean GPA is equal for students with and without anxiety.
+
+    -   H1: Mean GPA differs between students with and without anxiety.
+
+8.  Depression
+
+    -   H0: Mean GPA is equal for students with and without depression.
+
+    -   H1: Mean GPA differs between students with and without depression.
+
+9.  Panic Attacks
+
+    -   H0: Mean GPA is equal for students with and without panic attacks.
+
+    -   H1: Mean GPA differs between students with and without panic attacks.
+
+## Data analysis
+
+In our preliminary analyses, we employed one‑way analysis of variance (ANOVA) to compare mean outcomes between categorical groups and simple linear regression to quantify relationships between continuous variables. ANOVA is appropriate when the independent variable (for example, stress level) is categorical(has more than 2 groups) and the outcome (such as GPA) is quantitative ; regression is used when both predictor and outcome are quantitative. We set our significance threshold at p \< 0.05, meaning that any test yielding a p‑value below this cutoff leads us to reject the null hypothesis of no association or no difference. Only those relationships for which the null hypothesis is rejected will be subjected to further investigation.
+
+```{r}
+df <- student_raw %>%
+  rename(
+    Grades = Grades,
+    Stress_Level = Stress_Level,
+    Study_Hours_Per_Day = Study_Hours_Per_Day,
+    Sleep_Hours_Per_Day = Sleep_Hours_Per_Day,
+    Physical_Activity_Hours_Per_Day = Physical_Activity_Hours_Per_Day,
+    Social_Hours_Per_Day = Social_Hours_Per_Day,
+    Extracurricular_Hours_Per_Day = Extracurricular_Hours_Per_Day
+  ) %>%
+  mutate(
+    Stress_Level = factor(Stress_Level, c("Low", "Moderate", "High"))
+  )
+
+# Define models
+anova_stress <- aov(Grades ~ Stress_Level, data = df)
+anova_study  <- aov(Study_Hours_Per_Day ~ Stress_Level, data = df)
+anova_sleep  <- aov(Sleep_Hours_Per_Day ~ Stress_Level, data = df)
+anova_phys   <- aov(Physical_Activity_Hours_Per_Day ~ Stress_Level, data = df)
+anova_soc    <- aov(Social_Hours_Per_Day ~ Stress_Level, data = df)
+anova_extra  <- aov(Extracurricular_Hours_Per_Day ~ Stress_Level, data = df)
+
+lm_study     <- lm(Grades ~ Study_Hours_Per_Day, data = df)
+lm_sleep     <- lm(Grades ~ Sleep_Hours_Per_Day, data = df)
+lm_phys      <- lm(Grades ~ Physical_Activity_Hours_Per_Day, data = df)
+lm_soc       <- lm(Grades ~ Social_Hours_Per_Day, data = df)
+lm_extra     <- lm(Grades ~ Extracurricular_Hours_Per_Day, data = df)
+
+alpha <- 0.05
+
+# Build summary table
+summary_tbl <- tibble(
+  Analysis = c(
+    "GPA vs Stress",
+    "Study Hours vs Stress",
+    "Sleep Hours vs Stress",
+    "Physical Activity vs Stress",
+    "Social Hours vs Stress",
+    "Extracurricular vs Stress",
+    "Study Hours vs GPA",
+    "Sleep Hours vs GPA",
+    "Physical Activity vs GPA",
+    "Social Hours vs GPA",
+    "Extracurricular vs GPA"
+  ),
+  
+  Types = c(
+    rep("Categorical vs Quantitative", 6),
+    rep("Quantitative vs Quantitative", 5)
+  ),
+  Test = c(
+    rep("ANOVA", 6),
+    rep("Linear regression", 5)
+  ),
+  Pvalue = c(
+    broom::tidy(anova_stress)$p.value[1],
+    broom::tidy(anova_study)$p.value[1],
+    broom::tidy(anova_sleep)$p.value[1],
+    broom::tidy(anova_phys)$p.value[1],
+    broom::tidy(anova_soc)$p.value[1],
+    broom::tidy(anova_extra)$p.value[1],
+    broom::glance(lm_study)$p.value,
+    broom::glance(lm_sleep)$p.value,
+    broom::glance(lm_phys)$p.value,
+    broom::glance(lm_soc)$p.value,
+    broom::glance(lm_extra)$p.value
+  )
+) %>%
+  mutate(
+    H0 = if_else(Pvalue < alpha, "Reject", "Do not Reject"),
+    Investigation = if_else(
+      H0 == "Reject",
+        if_else(grepl("ANOVA", Test),
+          "Conduct Tukey HSD",
+          "Examine regression coefficients"),
+      "None"
+    )
+  )
+
+# Output table
+knitr::kable(
+  summary_tbl,
+  caption = "Summary of preliminary statistical tests",
+  digits = 4
+)
+```
+
+## Further Investigation
+
+For categorical group comparisons, we will conduct Tukey’s HSD (honest significant difference) post‑hoc tests to identify which specific pairs of group means differ and to estimate effect sizes.For regression models, we will examine estimated coefficients, R², and residual diagnostics to assess the strength, direction, and robustness of the continuous associations. These follow‑up tests complement the initial omnibus analyses by clarifying where and how variables are related.
+
+```{r}
+# Mapping of display labels to quantitative outcomes
+mapping <- list(
+  "GPA"                         = "Grades",
+  "Study Hours"         = "Study_Hours_Per_Day",
+  "Sleep Hours"         = "Sleep_Hours_Per_Day",
+  "Physical Activity"   = "Physical_Activity_Hours_Per_Day",
+  "Social Hours"        = "Social_Hours_Per_Day",
+  "Extracurricular" = "Extracurricular_Hours_Per_Day"
+)
+
+# Compute Tukey HSD for Stress_Level → each quantitative variable
+tukey_all <- purrr::imap_dfr(
+  mapping,
+  function(col_name, display_label) {
+    # 1) Fit ANOVA: outcome ~ Stress_Level
+    formula <- as.formula(paste(col_name, "~ Stress_Level"))
+    aov_mod <- aov(formula, data = df)
+    
+    # 2) Extract Tukey HSD for Stress_Level
+    tukey_res <- TukeyHSD(aov_mod, "Stress_Level")$Stress_Level
+    
+    # 3) Tidy and flag conclusiveness
+    as.data.frame(tukey_res) %>%
+      rownames_to_column("Comparison") %>%
+      rename(
+        Mean_Diff = diff,
+        Lower_CI   = lwr,
+        Upper_CI   = upr,
+        P      = `p adj`
+      ) %>%
+      mutate(
+        Variable   = display_label,
+        Conclusive = if_else(P < 0.05, "Yes", "No")
+      ) %>%
+      select(Variable, Comparison, Mean_Diff, Lower_CI, Upper_CI, P, Conclusive)
+  }
+)
+
+# 4) Output a single formatted table
+tukey_all %>%
+  kable(
+    caption = "Combined Tukey HSD Pairwise Comparisons for Stress Level vs. Quantitative Outcomes",
+    digits  = 4
+  ) %>%
+  kable_styling(position = "left")
+```
+
+In Table 3, none of the three pairwise contrasts for Extracurricular Hours per Day by stress level were significant (Adjusted p = 0.9743, 0.9922, 0.8881), so we did not pursue any further comparisons for that variable.
+
+Although the overall ANOVA for Sleep Hours per Day versus stress was highly significant (p \< 0.001), only two of its three contrasts reached significance: High vs Low (mean difference = –1.0175, Adjusted p \< 0.001) and High vs Moderate (mean difference = –0.9012, Adjusted p \< 0.001)
+
+The Moderate vs Low contrast was not significant (–0.1163, Adjusted p = 0.4491). This pattern—overall variability without every category contrast achieving significance—suggests that the largest drop in sleep hours is between the highest‐stress group and the others, rather than a linear trend across all levels.
+
+For Social Hours per Day, only the High vs Low contrast proved conclusive (mean difference = –0.2631, Adjusted p = 0.0472), while Moderate vs Low (–0.1513, p = 0.4022) and High vs Moderate (–0.1118, p = 0.3744) were not. Again, this points to a threshold effect at the upper social bracket.
+
+By contrast, all pairwise contrasts for GPA, Study Hours per Day, and Physical Activity per Day yielded Adjusted p \< 0.001 and will be examined in detail. Non-significant findings (Extracurricular Hours per Day, the Moderate–Low Sleep contrast, and the two non-significant Social contrasts) will be reported but not subjected to additional subgroup analysis. To display these results succinctly, we will use a forest-style plot of each mean difference with its 95 % confidence interval, faceted by outcome variable—this will clearly show which intervals exclude zero and allow direct comparison of effect sizes.
+
+```{r}
+#| label: plot-tukey-gpa
+#| fig-cap: "Tukey HSD Mean Differences for GPA by Stress Level"
+#| fig-pos: H
+
+# Fit ANOVA and extract Tukey HSD for GPA
+df <- student_raw %>%
+  rename(
+    Grades                         = Grades,
+    Stress_Level                   = Stress_Level
+  ) %>%
+  mutate(
+    Stress_Level = factor(Stress_Level, c("Low", "Moderate", "High"))
+  )
+
+# 1) ANOVA and Tukey
+aov_gpa      <- aov(Grades ~ Stress_Level, data = df)
+tukey_gpa_df <- as.data.frame(TukeyHSD(aov_gpa, "Stress_Level")$Stress_Level) %>%
+  rownames_to_column("Comparison") %>%
+  rename(
+    mean_diff = diff,
+    lower_ci  = lwr,
+    upper_ci  = upr,
+    adj_p     = `p adj`
+  )
+
+# 2) Plot
+ggplot(tukey_gpa_df, aes(x = mean_diff, y = reorder(Comparison, mean_diff))) +
+  geom_point(size = 2) +
+  geom_errorbarh(aes(xmin = lower_ci, xmax = upper_ci), height = 0.2) +
+  labs(
+    x = "Mean Difference in GPA",
+    y = NULL
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: plot-tukey-study
+#| fig-cap: "Tukey HSD Mean Differences for Study Hours per Day by Stress Level"
+#| fig-pos: H
+# 0) Prep libraries (df already defined above)
+library(dplyr); library(ggplot2); library(tibble)
+
+# 1) ANOVA and Tukey
+aov_study    <- aov(Study_Hours_Per_Day ~ Stress_Level, data = df)
+tukey_study_df <- as.data.frame(TukeyHSD(aov_study, "Stress_Level")$Stress_Level) %>%
+  rownames_to_column("Comparison") %>%
+  rename(
+    mean_diff = diff,
+    lower_ci  = lwr,
+    upper_ci  = upr,
+    adj_p     = `p adj`
+  )
+
+# 2) Plot
+ggplot(tukey_study_df, aes(x = mean_diff, y = reorder(Comparison, mean_diff))) +
+  geom_point(size = 2) +
+  geom_errorbarh(aes(xmin = lower_ci, xmax = upper_ci), height = 0.2) +
+  labs(
+    x = "Mean Difference in Study Hours",
+    y = NULL
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: plot-tukey-physact
+#| fig-cap: "Tukey HSD Mean Differences for Physical Activity Hours per Day by Stress Level"
+#| fig-pos: H
+
+# 0) Prep libraries (df already defined above)
+library(dplyr); library(ggplot2); library(tibble)
+
+# 1) ANOVA and Tukey
+aov_phys     <- aov(Physical_Activity_Hours_Per_Day ~ Stress_Level, data = df)
+tukey_phys_df <- as.data.frame(TukeyHSD(aov_phys, "Stress_Level")$Stress_Level) %>%
+  rownames_to_column("Comparison") %>%
+  rename(
+    mean_diff = diff,
+    lower_ci  = lwr,
+    upper_ci  = upr,
+    adj_p     = `p adj`
+  )
+
+# 2) Plot
+ggplot(tukey_phys_df, aes(x = mean_diff, y = reorder(Comparison, mean_diff))) +
+  geom_point(size = 2) +
+  geom_errorbarh(aes(xmin = lower_ci, xmax = upper_ci), height = 0.2) +
+  labs(
+    x = "Mean Difference in Activity Hours",
+    y = NULL
+  ) +
+  theme_minimal()
+```
+
+In our regression analyses, we fit separate linear models predicting GPA from each quantitative predictor. For each model, we report the estimated slope coefficient, the coefficient of determination (R²), and the overall model p-value, accompanied by a conclusive flag indicating whether the association is statistically significant at α = 0.05. These metrics allow us to assess the direction, strength, and explanatory power of each predictor and will be supplemented by residual diagnostics to confirm model validity. This detailed reporting extends our initial tests by precisely quantifying continuous relationships.
+
+```{r}
+# Mapping of display labels to quantitative predictors
+tmp_mapping <- list(
+  "Study Hours per Day"       = "Study_Hours_Per_Day",
+  "Sleep Hours per Day"       = "Sleep_Hours_Per_Day",
+  "Physical Activity per Day" = "Physical_Activity_Hours_Per_Day",
+  "Social Hours per Day"      = "Social_Hours_Per_Day",
+  "Extracurricular Hours per Day" = "Extracurricular_Hours_Per_Day"
+)
+
+linreg_details <- purrr::imap_dfr(
+  tmp_mapping,
+  function(var_name, display_label) {
+    model <- lm(as.formula(paste("Grades ~", var_name)), data = df)
+    gl    <- broom::glance(model)
+    td    <- broom::tidy(model) %>%
+      filter(term == var_name) %>%
+      select(estimate, p.value)
+
+    tibble(
+      Predictor       = display_label,
+      Estimate        = td$estimate,
+      `P value`       = gl$p.value,
+      `R squared`     = gl$r.squared,
+      Conclusive      = if_else(gl$p.value < 0.05, "Yes", "No")
+    )
+  }
+)
+
+linreg_details %>%
+  kable(
+    digits    = 4,
+    caption   = "Detailed Linear Regression Results for Quantitative Predictors"
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    position   = "left"
+  )
+```
+
+In examining our detailed regression results (Table X), we see that Study Hours per Day, Physical Activity per Day, and Social Hours per Day each yield statistically significant associations with GPA (all p \< 0.001) and explain non-trivial portions of variance (R² = 0.5393, 0.1164, and 0.0073, respectively). Specifically, the slope estimate for Study Hours is Beta = 0.3852, indicating that each additional hour of daily study predicts a 0.39-point increase in GPA on our four-point scale; with over 53% of GPA variation accounted for, this is our strongest continuous predictor and will be the centerpiece of further analysis.
+
+By contrast, Sleep Hours per Day shows a near-zero slope (Beta = –0.0022), a non-significant p-value (p = 0.8491), and an effectively zero R² (≈ 0.000), demonstrating no discernible linear relationship between sleep duration and GPA in this sample. Because the confidence interval around the slope includes zero and the model explains none of the outcome variance, we will report this null finding but will not go any further in-depth plotting or diagnostics.
+
+Similarly, Extracurricular Hours per Day yields a small negative slope (Beta = –0.0207) that is not statistically significant (p = 0.1516) and explains only 0.1% of GPA variance (R² = 0.0010). This suggests that time spent in extracurricular activities has no reliable linear impact on academic performance here; accordingly, we will also limit our reporting to the tabulated summary for this predictor without additional regression visuals.
+
+Physical Activity per Day, in contrast, has β = –0.1013 (p \< 0.001, R² = 0.1164), indicating a modest but reliable inverse relationship in which each extra hour of exercise predicts about a tenth-point decrease in GPA. Though smaller in magnitude than the study-hours effect, this result warrants further graphical exploration and examination of potential nonlinearities .
+
+Finally, Social Hours per Day produces β = –0.0379 (p = 0.0001, R² = 0.0073), a small but statistically robust negative association; each additional hour of socializing corresponds to roughly a 0.04-point drop in GPA. Given its significance, we will include a fitted‐line plot to assess whether the negative social-time effect holds uniformly across the stress spectrum or whether it reflects a subgroup pattern.
+
+In summary, only the three predictors with p \< 0.05 (Study Hours, Physical Activity, and Social Hours) will be subjected to further model inspection and visualization.
+
+```{r}
+
+library(ggplot2)
+
+ggplot(df, aes(x = Study_Hours_Per_Day, y = Grades)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    x     = "Study Hours per Day",
+    y     = "GPA",
+    title = "GPA vs. Study Hours per Day"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: plot-lm-physact
+#| fig-cap: "Linear Regression of GPA on Physical Activity Hours per Day"
+#| fig-pos: H
+
+library(ggplot2)
+
+ggplot(df, aes(x = Physical_Activity_Hours_Per_Day, y = Grades)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    x     = "Physical Activity Hours per Day",
+    y     = "GPA",
+    title = "GPA vs. Physical Activity Hours per Day"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: plot-lm-social
+#| fig-cap: "Linear Regression of GPA on Social Hours per Day"
+#| fig-pos: H
+
+library(ggplot2)
+
+ggplot(df, aes(x = Social_Hours_Per_Day, y = Grades)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    x     = "Social Hours per Day",
+    y     = "GPA",
+    title = "GPA vs. Social Hours per Day"
+  ) +
+  theme_minimal()
+```
+
+## Supporting research
 
 ```{r}
 #| label: Cleans/wrangles supplementary dataset
@@ -503,147 +934,23 @@ ggplot(student_no_CS, aes(x = major, fill = anxiety_level)) +
 
 From @major-anxiety_plot and @no-cs-anxiety_plot we are able to learn how a students major effects there anxiety level. From this graphic we are able to see that for the majority of majors a plurality of students have severe anxiety. The two majors with the highest levels of severe anxiety were civil engineering and electrical engineering. This relation show there being a greater relation between a students stress and there anxiety compared to a students stress and depression or there anxiety and depression. Another interesting observation is that students studding Environmental and Life Sciences are the only group who has multiple levels of measured anxiety to have higher levels of moderate anxiety compared to severe anxiety. From this knowledge we potentially apply what students do for that major towards majors with higher levels of anxiety.
 
-### Conclusion
+## Conclusion
 
-## Data Information
+This research set out to examine how various student lifestyle factors—including study time, sleep duration, physical activity, social interaction, and extracurricular involvement—relate to both academic performance, as measured by GPA, and self-reported stress levels. The investigation was guided by specific research questions focused on identifying whether and how these behavioral variables predict significant differences in student outcomes. Additionally, the role of gender, academic major, and scholarship status was considered to provide a more comprehensive view of the student experience across demographic lines.
 
+The main statistical analyses included a combination of one-way ANOVA tests for categorical group comparisons and simple linear regression for associations between continuous variables. These methods enabled rigorous testing of the hypotheses for each factor. Notably, the ANOVA test for GPA by stress level yielded a statistically significant result, leading to the rejection of the null hypothesis. Post-hoc Tukey HSD tests further demonstrated that students reporting high stress levels had significantly higher GPAs than their peers with moderate or low stress. These findings suggest that academic performance and psychological stress are not independent but may instead be intertwined in complex ways, potentially reflecting heightened academic effort accompanied by increased psychological burden.
 
-### Secondary Data Set
+Regression analysis provided additional clarity by quantifying the relationships between each lifestyle factor and GPA. Study hours per day stood out as the strongest predictor, with a statistically significant positive association and an R² of 0.5393, indicating that over 53% of GPA variance could be explained by this single variable. Physical activity and social hours showed weaker but still statistically significant negative associations with GPA, suggesting that increased time in these domains may modestly detract from academic outcomes. Conversely, sleep hours and extracurricular involvement were not found to be significantly associated with GPA, and their explanatory power was negligible. These results contribute to a more precise understanding of which aspects of student behavior are most relevant for academic achievement.
 
-1.  Data Tidying
+Further investigation of group-level differences in stress level across behavioral factors revealed additional patterns. Tukey HSD tests showed that both study hours and physical activity hours significantly differed across stress levels, particularly between the high-stress group and the other two. These differences were not uniformly linear but instead reflected threshold effects, wherein high stress levels were associated with disproportionately higher study time and reduced sleep and leisure. These results underscore the importance of contextualizing stress within behavioral trade-offs rather than assuming uniform trends across all categories.
 
-2.  Data Wrangling
+Supporting data drawn from the secondary dataset provided additional insights into the broader academic environment. For instance, no significant relationship was found between scholarship status and stress level, challenging common assumptions about financial pressure. Furthermore, comparisons across academic majors revealed consistently elevated stress and anxiety among students in civil and electrical engineering, suggesting that discipline-specific demands may mediate the effects of general lifestyle factors. While these findings fall slightly outside the main scope of the paper, they align with and reinforce the broader patterns identified in the primary analysis.
 
-3.  Data Cleaning
+In summary, this research demonstrates that while certain lifestyle factors—especially study time—have a direct and measurable impact on GPA, they also correlate with elevated stress levels. The coexistence of strong academic performance and psychological strain indicates that academic success may come at a psychological cost for some students. By employing both inferential statistics and targeted post-hoc analyses, this study provides evidence-based insights into the behavioral determinants of student outcomes. These results highlight the need for academic institutions to consider how behavioral expectations intersect with mental health, and to design policies and interventions that support both performance and well-being.
 
-### Fair and Care Principles
-
-## Open Science process
-
-## Code Apendix
+## Code Appendix
 
 ## Citations
 
-```{r}
-#| label: social-GPA-residual-plot
-#| fig-cap: "Social hours and GPA residuals Plot"
-#| fig-pos: H
-#| fig-height: 6
-#| fig-alt: "Residuals plot showing the residuals vs. fitted values of each students social hours and GPA"
-#| lst-label: lst-stress
-#| lst-cap: "Code Chunk for residuals social hours"
-
-#create a linear model for social hours compared to GPA
-linear_model_social <- lm(
-  Grades ~ Social_Hours_Per_Day, 
-  data = student_4
-  )
-#create a residual data frame with social hours compared to GPA
-residual_data_frame <- data.frame(
-  Fitted = fitted(linear_model_social),
-  Residuals = resid(linear_model_social)
-)
-
-# Plot residuals vs fitted values
-ggplot(
-  residual_data_frame, 
-  aes(
-    x = Fitted, 
-    y = Residuals
-    )
-  ) +
-  geom_point(
-    color = "red"
-    ) +
-  labs(
-    title = "Residual Plot for Social Hours vs Grades",
-    x = "Fitted Values (Predicted GPA)",
-    y = "Residuals"
-  ) +
-  theme_bw()
+```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
-
-This residual plot shows the residual vs. fitted values(predicted GPA) of each point in the data set. This particular residual plot compares the social hours and the resulting predicted GPA. As seen in the graph, there is a plus-minus range of about 0.75 in the residuals compared to the increase in GPA, with the 0 value for the residuals being the line of best fit.
-
-```{r}
-#| label: physical-GPA-residual-plot
-#| fig-cap: "Physical activity hours and GPA residuals Plot"
-#| fig-pos: H
-#| fig-height: 6
-#| fig-alt: "Residuals plot showing the residuals vs. fitted values of each students physical activity hours and GPA"
-#| lst-label: lst-stress
-#| lst-cap: "Code Chunk for residuals physical activity hours"
-
-#create a linear model for physical activity hours compared to GPA
-linear_model_physical <- lm(
-  Grades ~ Physical_Activity_Hours_Per_Day, 
-  data = student_4
-  )
-#create a residual data frame for physical activity hours compared to GPA
-residual_data_frame <- data.frame(
-  Fitted = fitted(linear_model_physical),
-  Residuals = resid(linear_model_physical)
-)
-
-# Plot residuals vs fitted values
-ggplot(
-  residual_data_frame, 
-  aes(
-    x = Fitted, 
-    y = Residuals
-    )
-  ) +
-  geom_point(
-    color = "red"
-    ) +
-  labs(
-    title = "Residual Plot for Physical Activity vs Grades",
-    x = "Fitted Values (Predicted GPA)",
-    y = "Residuals"
-  ) +
-  theme_bw()
-```
-
-This residual plot shows the residual vs. fitted values(predicted GPA) of each point in the data set. This particular residual plot compares the physical activity hours and the resulting predicted GPA. As seen in the graph, there is a plus-minus range of about 0.75 in the residuals compared to the increase in GPA, with the 0 value for the residuals being the line of best fit.
-
-```{r}
-#| label: study-GPA-residual-plot
-#| fig-cap: "Study hours and GPA residuals Plot"
-#| fig-pos: H
-#| fig-height: 6
-#| fig-alt: "Residuals plot showing the residuals vs. fitted values of each students study hours and GPA"
-#| lst-label: lst-stress
-#| lst-cap: "Code Chunk for residuals study hours"
-
-#Create a linear model for study hours compared to GPA
-linear_model_study <- lm(
-  Grades ~ Study_Hours_Per_Day, 
-  data = student_4
-  )
-
-#Create a residual data frame for study hours compared to GPA
-residual_data_frame <- data.frame(
-  Fitted = fitted(linear_model_study),
-  Residuals = resid(linear_model_study)
-)
-
-# Plot residuals vs fitted values
-ggplot(
-  residual_data_frame, 
-  aes(
-    x = Fitted, 
-    y = Residuals
-    )
-  ) +
-  geom_point(
-    color = "red"
-    ) +
-  labs(
-    title = "Residual Plot for Study Hours vs Grades",
-    x = "Fitted Values (Predicted GPA)",
-    y = "Residuals"
-  ) +
-  theme_bw()
-```
-
-This residual plot shows the residual vs. fitted values(predicted GPA) of each point in the data set. This particular residual plot compares the study hours and the resulting predicted GPA. As seen in the graph, there is a plus-minus range of about 0.6 in the residuals compared to the increase in GPA, with the 0 value for the residuals being the line of best fit.
