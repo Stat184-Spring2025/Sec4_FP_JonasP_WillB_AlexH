@@ -26,7 +26,7 @@ student_lifestyle_dataset..csv (Primary Dataset)
 Processed.csv (Supplementary Dataset)
   - Contains student information their mental health status's. Also includes student responces to the original survey that was used to generate the dataset (39 Columns, 2029 Rows).
 
-Use this section to explain the structure of your repo. This should help visitors quickly figure out where they should look to find certain elements. Further, you can use this space to highlight and briefly explain important/key files in the repo.
+
 
 ## Data Sources and Acknowledgements
 - The primary dataset was sourced from Kaggle (Lifestyle Factors and Their Impact on Students)
