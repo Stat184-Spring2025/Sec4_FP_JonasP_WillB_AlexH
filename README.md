@@ -37,4 +37,3 @@ Will Bolger: wdb5169@psu.edu
 Jonas Priolo: jpp6266@psu.edu
 Alejandro Herraiz Sen: azh6047@psu.edu
 
-Give information about who are the authors of the project and how people can get in touch if they have questions.
