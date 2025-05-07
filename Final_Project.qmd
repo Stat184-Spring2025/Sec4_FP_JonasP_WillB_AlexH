@@ -22,6 +22,9 @@ library(dplyr)
 library(knitr)
 library(tinytex)
 library(tidyverse)
+library(tibble)
+library(broom)
+library(purrr)
 # Google R style guide used
 ```
 
@@ -142,8 +145,170 @@ The Box and Whisker plot @gpa-stress_plot allows us to confirm what we learned a
 
 ### Hypothesis
 
-### Data analysis
+This study examines how different aspects of students’ daily routines, specifically the amount of time dedicated to studying, sleep duration, physical activity, social interaction, and participation in extracurricular activities, are associated with both self-reported stress levels and academic performance as measured by GPA. To drive the analysis, the following detailed hypotheses are proposed:
 
+1.  Stress Level and GPA
+
+    -   H0: The mean GPA is equal across all stress categories (Low, Moderate, High).
+
+    -   H1: The mean GPA differs across stress categories.
+
+2.  Study Hours
+
+    -   H0 (gpa): There is no linear relationship between daily study hours and GPA .
+
+    -   H1 (gpa): Daily study hours are correlated with GPA .
+
+    -   H0 (stress): Mean daily study hours are equal across stress categories.
+
+    -   H1 (stress): Mean daily study hours differ across stress categories.
+
+3.  Sleep Duration
+
+    -   H0 (gpa): There is no linear relationship between sleep hours and GPA .
+
+    -   H1 (gpa): Sleep hours are correlated with GPA .
+
+    -   H0 (stress): Mean sleep hours are equal across stress categories
+
+    -   H1 (stress): Mean sleep hours differ across stress categories.
+
+4.  Physical Activity
+
+    -   H0 (gpa): No correlation between physical activity hours and GPA .
+
+    -   H1 (gpa): Physical activity hours are correlated with GPA .
+
+    -   H0 (stress): Mean physical activity hours are equal across stress categories.
+
+    -   H1 (stress): Mean physical activity hours differ across stress categories.
+
+5.  Social Engagement
+
+    -   H0 (gpa): No correlation between social hours and GPA.
+
+    -   H1 (gpa): Social hours are correlated with GPA.
+
+    -   H0 (stress): Mean social hours are equal across stress categories.
+
+    -   H1 (stress): Mean social hours differ across stress categories.
+
+6.  Extracurricular Involvement
+
+    -   H0 (gpa): No linear association between extracurricular hours and GPA.
+
+    -   H1 (gpa): Extracurricular hours are correlated with GPA.
+
+    -   H0 (stress): Mean extracurricular hours are equal across stress categories.
+
+    -   H1 (stress): Mean extracurricular hours differ across stress categories.
+
+7.  Anxiety
+
+    -   H0: Mean GPA is equal for students with and without anxiety.
+
+    -   H1: Mean GPA differs between students with and without anxiety.
+
+8.  Depression
+
+    -   H0: Mean GPA is equal for students with and without depression.
+
+    -   H1: Mean GPA differs between students with and without depression.
+
+9.  Panic Attacks
+
+    -   H0: Mean GPA is equal for students with and without panic attacks.
+
+    -   H1: Mean GPA differs between students with and without panic attacks.
+
+### Data analysis
+```{r}
+df <- student_raw %>%
+  rename(
+    Grades = Grades,
+    Stress_Level = Stress_Level,
+    Study_Hours_Per_Day = Study_Hours_Per_Day,
+    Sleep_Hours_Per_Day = Sleep_Hours_Per_Day,
+    Physical_Activity_Hours_Per_Day = Physical_Activity_Hours_Per_Day,
+    Social_Hours_Per_Day = Social_Hours_Per_Day,
+    Extracurricular_Hours_Per_Day = Extracurricular_Hours_Per_Day
+  ) %>%
+  mutate(
+    Stress_Level = factor(Stress_Level, c("Low", "Moderate", "High"))
+  )
+
+# Define models
+anova_stress <- aov(Grades ~ Stress_Level, data = df)
+anova_study  <- aov(Study_Hours_Per_Day ~ Stress_Level, data = df)
+anova_sleep  <- aov(Sleep_Hours_Per_Day ~ Stress_Level, data = df)
+anova_phys   <- aov(Physical_Activity_Hours_Per_Day ~ Stress_Level, data = df)
+anova_soc    <- aov(Social_Hours_Per_Day ~ Stress_Level, data = df)
+anova_extra  <- aov(Extracurricular_Hours_Per_Day ~ Stress_Level, data = df)
+
+lm_study     <- lm(Grades ~ Study_Hours_Per_Day, data = df)
+lm_sleep     <- lm(Grades ~ Sleep_Hours_Per_Day, data = df)
+lm_phys      <- lm(Grades ~ Physical_Activity_Hours_Per_Day, data = df)
+lm_soc       <- lm(Grades ~ Social_Hours_Per_Day, data = df)
+lm_extra     <- lm(Grades ~ Extracurricular_Hours_Per_Day, data = df)
+
+alpha <- 0.05
+
+# Build summary table
+summary_tbl <- tibble(
+  Analysis = c(
+    "Stress vs GPA",
+    "Study Hours vs Stress",
+    "Sleep Hours vs Stress",
+    "Physical Activity vs Stress",
+    "Social Hours vs Stress",
+    "Extracurricular vs Stress",
+    "Study Hours vs GPA",
+    "Sleep Hours vs GPA",
+    "Physical Activity vs GPA",
+    "Social Hours vs GPA",
+    "Extracurricular vs GPA"
+  ),
+  
+  Types = c(
+    rep("Categorical vs Quantitative", 6),
+    rep("Quantitative vs Quantitative", 5)
+  ),
+  Test = c(
+    rep("ANOVA", 6),
+    rep("Linear regression", 5)
+  ),
+  Pvalue = c(
+    broom::tidy(anova_stress)$p.value[1],
+    broom::tidy(anova_study)$p.value[1],
+    broom::tidy(anova_sleep)$p.value[1],
+    broom::tidy(anova_phys)$p.value[1],
+    broom::tidy(anova_soc)$p.value[1],
+    broom::tidy(anova_extra)$p.value[1],
+    broom::glance(lm_study)$p.value,
+    broom::glance(lm_sleep)$p.value,
+    broom::glance(lm_phys)$p.value,
+    broom::glance(lm_soc)$p.value,
+    broom::glance(lm_extra)$p.value
+  )
+) %>%
+  mutate(
+    H0 = if_else(Pvalue < alpha, "Reject", "Do not Reject"),
+    Investigation = if_else(
+      H0 == "Reject",
+        if_else(grepl("ANOVA", Test),
+          "Conduct Tukey HSD",
+          "Examine regression coefficients"),
+      "None"
+    )
+  )
+
+# Output table
+knitr::kable(
+  summary_tbl,
+  caption = "Summary of preliminary statistical tests",
+  digits = 4
+)
+```
 ### Further research? (hypothesis testing, regression, ANOVA, or machine learning)
 
 \
@@ -389,6 +554,6 @@ From @major-anxiety_plot and @no-cs-anxiety_plot we are able to learn how a stud
 
 ## Open Science process
 
-## Code Apendix
+## Code Appendix
 
 ## Citations
