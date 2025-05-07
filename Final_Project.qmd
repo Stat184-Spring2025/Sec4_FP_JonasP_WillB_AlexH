@@ -140,7 +140,7 @@ color_map <- setNames(
   students_scatter_matrix$Stress_Level
   ))],
   levels(
-    students$Stress_Level
+    students_scatter_matrix$Stress_Level
     ))
 
 # Plot Stress_Level as colors and without Gender 
@@ -192,7 +192,7 @@ color_map <- setNames(
   students_scatter_matrix$Gender
   ))],
   levels(
-    students$Gender
+    students_scatter_matrix$Gender
     )
   )
 
