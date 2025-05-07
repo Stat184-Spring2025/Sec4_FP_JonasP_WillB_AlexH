@@ -71,6 +71,7 @@ Our second and supplementary data set also originates from Figshare. The author 
 The data we are utilizing meets the CARE principles. The data can be used for the Collective benefit because it allows for us to identify what are the main factors that contribute to student well being. When properly analyzed as a society we can improve student resources and improve student mental health. This data meets the Authority to control because the data was collected via an optional survey. This means that participants had the autonomy to choose whether or not to share their experiences, ensuring respect for an individual's data and consent. The data aligns with Responsibility because it emphasizes the ethical use for this information such as prioritizing student welfare and protecting student privacy. Lastly this data is ethical with it promoting equity and positive change with its ability to inform policies to support student well-being.
 
 ## Main Data Set
+
 1.  Data Tidying
 
 For our main data set, it was already tidy, and didn't require any changes to it. Each row was considered a single case, with each case being a student. Each column represented a single variable, with no cell containing multiple data points. The variables in this case was student id, study hours per day, extracurricular activity per day, sleep hours per day, social hours per day, physical activity hours per day, reported stress level, their gender, and their GPA.
@@ -95,13 +96,11 @@ There was no data cleaning required as there were no missing values, no incorrec
 sum(duplicated(student_4))
 ```
 
-
-
 ## Exploratory Data Analysis
 
 Before creating any data visualizations, we created a frequency that alalyise a series of statistics to better understand the relation between student stress levels and a students grades. @tbl-student_stress_summary shows a summary table that includes *count*, *minimum*, *Q1*, *median*, *Q3*, *maximum*, *median absolute deviation*, *mean*, and *standard deviation* for every stress level and student GPA. We are interested in using this data to gain a better understanding of student stress and its impacts and we thought that a students GPA was a good metric to start with.
 
-### Scatter Plot Matricies
+### Scatter Plot Matrices
 
 We created two different scatter plot matrices to help us get a baseline overview of the data to help us better understand what we were analyzing. We took out three columns from the original data set, as they would not give valuable information in these visualizations. These three were the student id, gender, and GPA. We took out student id as it is a number assigned to each student and has no impact on any of the other variables. Next, we used gender and stress level to create 2 different scatter plot matrices as they were both categorical data, and would be unhelpful to directly graph against continuous data. After eliminating those three variables, we plotted the other variables of study hours per day, extracurricular hours per day, sleep hours per day, social hours per day, physical activity hours per day, and the students GPA on a 4.0 scale.
 
@@ -155,7 +154,7 @@ plot(
 )
 ```
 
-For this first scatter plot matrix, the different colored points represents the different stress levels reported by the students. The green points represent those with a reported high stress, red with a reported moderate stress level, and blue representing a reported low stress level. 
+For this first scatter plot matrix, the different colored points represents the different stress levels reported by the students. The green points represent those with a reported high stress, red with a reported moderate stress level, and blue representing a reported low stress level.
 
 ```{r}
 #| label: scatter-plot-gender-matrix
@@ -673,7 +672,6 @@ From @major-anxiety_plot and @no-cs-anxiety_plot we are able to learn how a stud
 ### Conclusion
 
 ## Data Information
-
 
 ### Secondary Data Set
 
