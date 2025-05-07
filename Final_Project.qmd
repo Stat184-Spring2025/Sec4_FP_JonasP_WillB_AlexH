@@ -120,7 +120,7 @@ For this first scatter plot matrix, the different colored points represents the 
 students_scatter_matrix <- student_4 %>%
   subset(, select = -c(Student_ID))
 # Define colors
-my_cols <- c("Blue", "Red", "dark Green")
+my_cols <- c("dark green", "red", "blue")
 
 #Rename labels
 students_scatter_matrix <- students_scatter_matrix %>%
@@ -158,7 +158,7 @@ plot(
 )
 ```
 
-For this first scatter plot matrix, the different colored points represents the different stress levels reported by the students. The green points represent those with a reported high stress, red with a reported moderate stress level, and blue representing a reported low stress level.
+For this first scatter plot matrix, the different colored points represents the different stress levels reported by the students. The dark green points represent those with a reported high stress, red with a reported moderate stress level, and blue representing a reported low stress level.
 
 ```{r}
 #| label: scatter-plot-gender-matrix
@@ -946,7 +946,9 @@ Further investigation of group-level differences in stress level across behavior
 
 Supporting data drawn from the secondary dataset provided additional insights into the broader academic environment. For instance, no significant relationship was found between scholarship status and stress level, challenging common assumptions about financial pressure. Furthermore, comparisons across academic majors revealed consistently elevated stress and anxiety among students in civil and electrical engineering, suggesting that discipline-specific demands may mediate the effects of general lifestyle factors. While these findings fall slightly outside the main scope of the paper, they align with and reinforce the broader patterns identified in the primary analysis.
 
-In summary, this research demonstrates that while certain lifestyle factors—especially study time—have a direct and measurable impact on GPA, they also correlate with elevated stress levels. The coexistence of strong academic performance and psychological strain indicates that academic success may come at a psychological cost for some students. By employing both inferential statistics and targeted post-hoc analyses, this study provides evidence-based insights into the behavioral determinants of student outcomes. These results highlight the need for academic institutions to consider how behavioral expectations intersect with mental health, and to design policies and interventions that support both performance and well-being. \## Code Appendix
+In summary, this research demonstrates that while certain lifestyle factors—especially study time—have a direct and measurable impact on GPA, they also correlate with elevated stress levels. The coexistence of strong academic performance and psychological strain indicates that academic success may come at a psychological cost for some students. By employing both inferential statistics and targeted post-hoc analyses, this study provides evidence-based insights into the behavioral determinants of student outcomes. These results highlight the need for academic institutions to consider how behavioral expectations intersect with mental health, and to design policies and interventions that support both performance and well-being.
+
+## Code Appendix
 
 ## Citations
 
