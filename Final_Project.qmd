@@ -22,6 +22,9 @@ library(dplyr)
 library(knitr)
 library(tinytex)
 library(tidyverse)
+library(tibble)
+library(broom)
+library(purrr)
 # Google R style guide used
 ```
 
@@ -219,7 +222,93 @@ This study examines how different aspects of students’ daily routines, specifi
     -   H1: Mean GPA differs between students with and without panic attacks.
 
 ### Data analysis
+```{r}
+df <- student_raw %>%
+  rename(
+    Grades = Grades,
+    Stress_Level = Stress_Level,
+    Study_Hours_Per_Day = Study_Hours_Per_Day,
+    Sleep_Hours_Per_Day = Sleep_Hours_Per_Day,
+    Physical_Activity_Hours_Per_Day = Physical_Activity_Hours_Per_Day,
+    Social_Hours_Per_Day = Social_Hours_Per_Day,
+    Extracurricular_Hours_Per_Day = Extracurricular_Hours_Per_Day
+  ) %>%
+  mutate(
+    Stress_Level = factor(Stress_Level, c("Low", "Moderate", "High"))
+  )
 
+# Define models
+anova_stress <- aov(Grades ~ Stress_Level, data = df)
+anova_study  <- aov(Study_Hours_Per_Day ~ Stress_Level, data = df)
+anova_sleep  <- aov(Sleep_Hours_Per_Day ~ Stress_Level, data = df)
+anova_phys   <- aov(Physical_Activity_Hours_Per_Day ~ Stress_Level, data = df)
+anova_soc    <- aov(Social_Hours_Per_Day ~ Stress_Level, data = df)
+anova_extra  <- aov(Extracurricular_Hours_Per_Day ~ Stress_Level, data = df)
+
+lm_study     <- lm(Grades ~ Study_Hours_Per_Day, data = df)
+lm_sleep     <- lm(Grades ~ Sleep_Hours_Per_Day, data = df)
+lm_phys      <- lm(Grades ~ Physical_Activity_Hours_Per_Day, data = df)
+lm_soc       <- lm(Grades ~ Social_Hours_Per_Day, data = df)
+lm_extra     <- lm(Grades ~ Extracurricular_Hours_Per_Day, data = df)
+
+alpha <- 0.05
+
+# Build summary table
+summary_tbl <- tibble(
+  Analysis = c(
+    "Stress vs GPA",
+    "Study Hours vs Stress",
+    "Sleep Hours vs Stress",
+    "Physical Activity vs Stress",
+    "Social Hours vs Stress",
+    "Extracurricular vs Stress",
+    "Study Hours vs GPA",
+    "Sleep Hours vs GPA",
+    "Physical Activity vs GPA",
+    "Social Hours vs GPA",
+    "Extracurricular vs GPA"
+  ),
+  
+  Types = c(
+    rep("Categorical vs Quantitative", 6),
+    rep("Quantitative vs Quantitative", 5)
+  ),
+  Test = c(
+    rep("ANOVA", 6),
+    rep("Linear regression", 5)
+  ),
+  Pvalue = c(
+    broom::tidy(anova_stress)$p.value[1],
+    broom::tidy(anova_study)$p.value[1],
+    broom::tidy(anova_sleep)$p.value[1],
+    broom::tidy(anova_phys)$p.value[1],
+    broom::tidy(anova_soc)$p.value[1],
+    broom::tidy(anova_extra)$p.value[1],
+    broom::glance(lm_study)$p.value,
+    broom::glance(lm_sleep)$p.value,
+    broom::glance(lm_phys)$p.value,
+    broom::glance(lm_soc)$p.value,
+    broom::glance(lm_extra)$p.value
+  )
+) %>%
+  mutate(
+    H0 = if_else(Pvalue < alpha, "Reject", "Do not Reject"),
+    Investigation = if_else(
+      H0 == "Reject",
+        if_else(grepl("ANOVA", Test),
+          "Conduct Tukey HSD",
+          "Examine regression coefficients"),
+      "None"
+    )
+  )
+
+# Output table
+knitr::kable(
+  summary_tbl,
+  caption = "Summary of preliminary statistical tests",
+  digits = 4
+)
+```
 ### Further research? (hypothesis testing, regression, ANOVA, or machine learning)
 
 \
