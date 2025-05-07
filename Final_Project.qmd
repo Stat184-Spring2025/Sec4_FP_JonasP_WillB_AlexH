@@ -4,7 +4,6 @@ format: pdf
 editor: visual
 ---
 
-
 ```{r}
 #| label: load_packages
 # Load necessary packages ----
@@ -76,6 +75,6 @@ student_4 <- student_raw %>%
 
 ## Open Science process
 
-## Code Apendix
+## Code Appendix
 
 ## Citations
