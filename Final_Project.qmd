@@ -106,9 +106,7 @@ Before creating any data visualizations, we created a frequency that alalyise a 
 
 We created two different scatter plot matrices to help us get a baseline overview of the data to help us better understand what we were analyzing. We took out three columns from the original data set, as they would not give valuable information in these visualizations. These three were the student id, gender, and GPA. We took out student id as it is a number assigned to each student and has no impact on any of the other variables. Next, we used gender and stress level to create 2 different scatter plot matrices as they were both categorical data, and would be unhelpful to directly graph against continuous data. After eliminating those three variables, we plotted the other variables of study hours per day, extracurricular hours per day, sleep hours per day, social hours per day, physical activity hours per day, and the students GPA on a 4.0 scale.
 
-
 For this first scatter plot matrix, the different colored points represents the different stress levels reported by the students. The green points represent those with a reported high stress, red with a reported moderate stress level, and blue representing a reported low stress level.
-
 
 ```{r}
 #| label: scatter-plot-stress-matrix
@@ -212,7 +210,6 @@ plot(
   col = color_map[students_scatter_matrix$Gender],
 )
 ```
-
 
 For the second scatter plot matrix, we mapped the color to the gender of each student in the data set. Each blue point represents a blue student and each red point represents a female student. This was done to help meet CARE principles. We wanted to make sure that there was not only an even representation of male and females, but that it also wasn't skewed in any particular way that would lead to results that could be interpreted as sexist against either gender.
 
@@ -953,4 +950,5 @@ In summary, this research demonstrates that while certain lifestyle factors—es
 
 ## Citations
 
-## Code Appendix
+```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
