@@ -950,13 +950,7 @@ In summary, this research demonstrates that while certain lifestyle factors—es
 
 ## Code Appendix
 
-
 ```{r codeAppend, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
 
 ## Citations
-
-
-
-
-
