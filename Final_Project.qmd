@@ -25,6 +25,8 @@ library(tidyverse)
 library(tibble)
 library(broom)
 library(purrr)
+library(kableExtra)
+
 # Google R style guide used
 ```
 
@@ -223,7 +225,7 @@ This study examines how different aspects of students’ daily routines, specifi
 
 ### Data analysis
 
-In our preliminary analyses, we employed one‑way analysis of variance (ANOVA) to compare mean outcomes between categorical groups and simple linear regression to quantify relationships between continuous variables. ANOVA is appropriate when the independent variable (for example, stress level) is categorical and the outcome (such as GPA) is quantitative; regression is used when both predictor and outcome are quantitative. We set our significance threshold at p \< 0.05, meaning that any test yielding a p‑value below this cutoff leads us to reject the null hypothesis of no association or no difference. Only those relationships for which the null hypothesis is rejected will be subjected to further investigation. For categorical group comparisons, we will conduct Tukey’s HSD (honest significant difference) post‑hoc tests to identify which specific pairs of group means differ and to estimate effect sizes. For regression models, we will examine estimated coefficients, R², and residual diagnostics to assess the strength, direction, and robustness of the continuous associations. These follow‑up tests complement the initial omnibus analyses by clarifying where and how variables are related.
+In our preliminary analyses, we employed one‑way analysis of variance (ANOVA) to compare mean outcomes between categorical groups and simple linear regression to quantify relationships between continuous variables. ANOVA is appropriate when the independent variable (for example, stress level) is categorical(has more than 2 groups) and the outcome (such as GPA) is quantitative ; regression is used when both predictor and outcome are quantitative. We set our significance threshold at p \< 0.05, meaning that any test yielding a p‑value below this cutoff leads us to reject the null hypothesis of no association or no difference. Only those relationships for which the null hypothesis is rejected will be subjected to further investigation.
 
 ```{r}
 df <- student_raw %>%
@@ -259,7 +261,7 @@ alpha <- 0.05
 # Build summary table
 summary_tbl <- tibble(
   Analysis = c(
-    "Stress vs GPA",
+    "GPA vs Stress",
     "Study Hours vs Stress",
     "Sleep Hours vs Stress",
     "Physical Activity vs Stress",
@@ -314,6 +316,66 @@ knitr::kable(
 ```
 
 ### Further Investigation
+
+For categorical group comparisons, we will conduct Tukey’s HSD (honest significant difference) post‑hoc tests to identify which specific pairs of group means differ and to estimate effect sizes.For regression models, we will examine estimated coefficients, R², and residual diagnostics to assess the strength, direction, and robustness of the continuous associations. These follow‑up tests complement the initial omnibus analyses by clarifying where and how variables are related.
+
+```{r}
+# Mapping of display labels to quantitative outcomes
+mapping <- list(
+  "GPA"                         = "Grades",
+  "Study Hours"         = "Study_Hours_Per_Day",
+  "Sleep Hours"         = "Sleep_Hours_Per_Day",
+  "Physical Activity"   = "Physical_Activity_Hours_Per_Day",
+  "Social Hours"        = "Social_Hours_Per_Day",
+  "Extracurricular" = "Extracurricular_Hours_Per_Day"
+)
+
+# Compute Tukey HSD for Stress_Level → each quantitative variable
+tukey_all <- purrr::imap_dfr(
+  mapping,
+  function(col_name, display_label) {
+    # 1) Fit ANOVA: outcome ~ Stress_Level
+    formula <- as.formula(paste(col_name, "~ Stress_Level"))
+    aov_mod <- aov(formula, data = df)
+    
+    # 2) Extract Tukey HSD for Stress_Level
+    tukey_res <- TukeyHSD(aov_mod, "Stress_Level")$Stress_Level
+    
+    # 3) Tidy and flag conclusiveness
+    as.data.frame(tukey_res) %>%
+      rownames_to_column("Comparison") %>%
+      rename(
+        Mean_Diff = diff,
+        Lower_CI   = lwr,
+        Upper_CI   = upr,
+        P      = `p adj`
+      ) %>%
+      mutate(
+        Variable   = display_label,
+        Conclusive = if_else(P < 0.05, "Yes", "No")
+      ) %>%
+      select(Variable, Comparison, Mean_Diff, Lower_CI, Upper_CI, P, Conclusive)
+  }
+)
+
+# 4) Output a single formatted table
+tukey_all %>%
+  kable(
+    caption = "Combined Tukey HSD Pairwise Comparisons for Stress Level vs. Quantitative Outcomes",
+    digits  = 4
+  ) %>%
+  kable_styling(position = "left")
+```
+
+In Table 3, none of the three pairwise contrasts for Extracurricular Hours per Day by stress level were significant (Adjusted p = 0.9743, 0.9922, 0.8881), so we did not pursue any further comparisons for that variable.
+
+Although the overall ANOVA for Sleep Hours per Day versus stress was highly significant (p \< 0.001), only two of its three contrasts reached significance: High vs Low (mean difference = –1.0175, Adjusted p \< 0.001) and High vs Moderate (mean difference = –0.9012, Adjusted p \< 0.001)
+
+The Moderate vs Low contrast was not significant (–0.1163, Adjusted p = 0.4491). This pattern—overall variability without every category contrast achieving significance—suggests that the largest drop in sleep hours is between the highest‐stress group and the others, rather than a linear trend across all levels.
+
+For Social Hours per Day, only the High vs Low contrast proved conclusive (mean difference = –0.2631, Adjusted p = 0.0472), while Moderate vs Low (–0.1513, p = 0.4022) and High vs Moderate (–0.1118, p = 0.3744) were not. Again, this points to a threshold effect at the upper social bracket.
+
+By contrast, all pairwise contrasts for GPA, Study Hours per Day, and Physical Activity per Day yielded Adjusted p \< 0.001 and will be examined in detail. Non-significant findings (Extracurricular Hours per Day, the Moderate–Low Sleep contrast, and the two non-significant Social contrasts) will be reported but not subjected to additional subgroup analysis. To display these results succinctly, we will use a forest-style plot of each mean difference with its 95 % confidence interval, faceted by outcome variable—this will clearly show which intervals exclude zero and allow direct comparison of effect sizes.
 
 ### Supporting research
 
