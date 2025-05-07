@@ -106,7 +106,113 @@ Before creating any data visualizations, we created a frequency that alalyise a 
 
 We created two different scatter plot matrices to help us get a baseline overview of the data to help us better understand what we were analyzing. We took out three columns from the original data set, as they would not give valuable information in these visualizations. These three were the student id, gender, and GPA. We took out student id as it is a number assigned to each student and has no impact on any of the other variables. Next, we used gender and stress level to create 2 different scatter plot matrices as they were both categorical data, and would be unhelpful to directly graph against continuous data. After eliminating those three variables, we plotted the other variables of study hours per day, extracurricular hours per day, sleep hours per day, social hours per day, physical activity hours per day, and the students GPA on a 4.0 scale.
 
+
 For this first scatter plot matrix, the different colored points represents the different stress levels reported by the students. The green points represent those with a reported high stress, red with a reported moderate stress level, and blue representing a reported low stress level.
+
+
+```{r}
+#| label: scatter-plot-stress-matrix
+#| fig-cap: "Scatter plot matrix with stress level"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Scatter plot matrix with colors based on stress level"
+#| lst-label: lst-scatter-plot-matrix-stress
+#| lst-cap: "Code Chunk for Scatter Plot Matrix with Stress"
+# Remove Student_ID column
+students_scatter_matrix <- student_4 %>%
+  subset(, select = -c(Student_ID))
+# Define colors
+my_cols <- c("Blue", "Red", "dark Green")
+
+#Rename labels
+students_scatter_matrix <- students_scatter_matrix %>%
+  rename(
+    Study = Study_Hours_Per_Day,
+    Extracurricular = Extracurricular_Hours_Per_Day,
+    Sleep = Sleep_Hours_Per_Day,
+    Social = Social_Hours_Per_Day,
+    Physical_Activity = Physical_Activity_Hours_Per_Day,
+    GPA = Grades
+  )
+
+# Make Stress_Level a factor
+students_scatter_matrix$Stress_Level <- as.factor(students_scatter_matrix$Stress_Level)
+
+# Create a color map
+color_map <- setNames(
+  my_cols[
+    1:length(
+      levels(
+  students_scatter_matrix$Stress_Level
+  ))],
+  levels(
+    students_scatter_matrix$Stress_Level
+    ))
+
+# Plot Stress_Level as colors and without Gender 
+plot(
+  subset(
+    students_scatter_matrix, 
+    select = -c(Gender, Stress_Level)
+    ),
+  pch = ".",
+  col = color_map[students_scatter_matrix$Stress_Level],
+)
+```
+
+For this first scatter plot matrix, the different colored points represents the different stress levels reported by the students. The green points represent those with a reported high stress, red with a reported moderate stress level, and blue representing a reported low stress level.
+
+```{r}
+#| label: scatter-plot-gender-matrix
+#| fig-cap: "Scatter plot matrix with Gender"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Scatter plot matrix with colors based on Gender"
+#| lst-label: lst-scatter-plot-matrix-gender
+#| lst-cap: "Code Chunk for Scatter Plot Matrix with Gender"
+# Remove Student_ID column
+students_scatter_matrix <- student_4 %>%
+  subset(, select = -c(Student_ID))
+# Define colors
+my_cols <- c("Red", "Blue")
+
+#Rename labels
+students_scatter_matrix <- students_scatter_matrix %>%
+  rename(
+    Study = Study_Hours_Per_Day,
+    Extracurricular = Extracurricular_Hours_Per_Day,
+    Sleep = Sleep_Hours_Per_Day,
+    Social = Social_Hours_Per_Day,
+    Physical_Activity = Physical_Activity_Hours_Per_Day,
+    GPA = Grades
+  )
+
+# Make Stress_Level a factor
+students_scatter_matrix$Gender <- as.factor(students_scatter_matrix$Gender)
+
+# Create a color map
+color_map <- setNames(
+  my_cols[
+    1:length(
+      levels(
+  students_scatter_matrix$Gender
+  ))],
+  levels(
+    students_scatter_matrix$Gender
+    )
+  )
+
+# Plot Gender as colors and without Stress_Level
+plot(
+  subset(
+    students_scatter_matrix, 
+    select = -c(Gender, Stress_Level)
+    ),
+  pch = ".",
+  col = color_map[students_scatter_matrix$Gender],
+)
+```
+
 
 For the second scatter plot matrix, we mapped the color to the gender of each student in the data set. Each blue point represents a blue student and each red point represents a female student. This was done to help meet CARE principles. We wanted to make sure that there was not only an even representation of male and females, but that it also wasn't skewed in any particular way that would lead to results that could be interpreted as sexist against either gender.
 
