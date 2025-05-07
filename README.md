@@ -1,28 +1,40 @@
-# Project Title
+# Student Lifestyle Factors and their Effects
 
-The goal of our repo is to determine the impact of time spent doing certain kinds of activities and stress has on a students cumulative GPA.
+The goal of our repo is to determine the impact of time spent doing certain kinds of activities and stress has on a students cumulative GPA. We will also analyse how factors such as a students academic major effects there mental health.
 
-Write a 1-2 sentences that quickly and clearly convey what your repo is for.
 
 ## Overview
+Our project looks at the variables of time spent studying, sleeping, being social, doing physical activity, extracurricular activities, and a students reported level of stress, and see if any of them have a strong relation on the resulting cumulative GPA of a given student. To acomplish this we generated a serious of data visualations that helped us get a better understanding of of how these factors effect student well being. 
 
-Our project looks at the variables of time spent studying, sleeping, being social, doing physical activity, extracurricular activities, and a students reported level of stress, and see if any of them have a strong correlation on the resulting cumulative GPA of a given student.
-
-Expand on those introductory sentences with a brief but informative description of your project's purpose and goals. This section should help visitors decide whether they should dig deeper into your repo/project.
 
 ### Interesting Insight
+![stress visual](https://github.com/user-attachments/assets/3531f6ae-4686-42fc-9726-0d6eab749bf6)
 
-This is optional but highly recommended. You'll include one interesting insight from your project as part of the README. This insight is most effective when you include a visual. Keep in mind that this visual must be included as an image file (e.g., JPG, PNG, etc.). You can export plots created with `{ggplot2}` by using the function `ggsave`.
+This is an example of one of the visualizations we created for this project. From it we are able to determine what student academic majors can be considerd "higher stress". This is very useful insight because it tells us how a students academic major impacts there mental health. Universities could then use this information to taylor suport serveices to these higher stress majors. 
+
 
 ## Repo Structure
+**Code**
+Final_Project.qmd
+  - Wrangles, cleans, generates visualizations and tables for both or primary and supplementary datasets.
+  - Generates final report
+
+**Data**
+student_lifestyle_dataset..csv (Primary Dataset)
+  - Contains numbers for a variety of student lifestyle factors as well as there GPA and stress level (9 Columns, 2000 rows).
+
+Processed.csv (Supplementary Dataset)
+  - Contains student information their mental health status's. Also includes student responces to the original survey that was used to generate the dataset (39 Columns, 2029 Rows).
 
 Use this section to explain the structure of your repo. This should help visitors quickly figure out where they should look to find certain elements. Further, you can use this space to highlight and briefly explain important/key files in the repo.
 
 ## Data Sources and Acknowledgements
-
-Be sure to list where you got any data used within the project. Be sure to acknowledge any one whose work or elements you're drawing upon.
+- The primary dataset was sourced from Kaggle (Lifestyle Factors and Their Impact on Students)
+- The supplementary dataset was sourced from Figshare (MHP (Anxiety, Stress, Depression) Dataset of University Students)
 
 ## Authors
 Will Bolger: wdb5169@psu.edu
+Jonas Priolo: jpp6266@psu.edu
+Alex Herraiz Sen: azh6047@psu.edu
 
 Give information about who are the authors of the project and how people can get in touch if they have questions.
