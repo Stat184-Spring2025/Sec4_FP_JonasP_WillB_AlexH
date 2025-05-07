@@ -1,6 +1,6 @@
 ---
 title: "Student Lifestyle Factors and their Effects"
-author: "Jonas Priolo, Will Bolger, Alex Herraiz Sen"
+author: "Jonas Priolo, Will Bolger, Alejandro Herraiz Sen"
 editor: visual
 date: "April 25, 2025"
 date-modified: now
@@ -50,7 +50,7 @@ student_4 <- student_raw %>%
   mutate(Grades = Grades * (4/10)) 
 ```
 
-# \## Introduction
+# Introduction
 
 ## Research Topic: Student Lifestyle Factors and their Effects
 
@@ -222,6 +222,9 @@ This study examines how different aspects of students’ daily routines, specifi
     -   H1: Mean GPA differs between students with and without panic attacks.
 
 ### Data analysis
+
+In our preliminary analyses, we employed one‑way analysis of variance (ANOVA) to compare mean outcomes between categorical groups and simple linear regression to quantify relationships between continuous variables. ANOVA is appropriate when the independent variable (for example, stress level) is categorical and the outcome (such as GPA) is quantitative; regression is used when both predictor and outcome are quantitative. We set our significance threshold at p \< 0.05, meaning that any test yielding a p‑value below this cutoff leads us to reject the null hypothesis of no association or no difference. Only those relationships for which the null hypothesis is rejected will be subjected to further investigation. For categorical group comparisons, we will conduct Tukey’s HSD (honest significant difference) post‑hoc tests to identify which specific pairs of group means differ and to estimate effect sizes. For regression models, we will examine estimated coefficients, R², and residual diagnostics to assess the strength, direction, and robustness of the continuous associations. These follow‑up tests complement the initial omnibus analyses by clarifying where and how variables are related.
+
 ```{r}
 df <- student_raw %>%
   rename(
@@ -309,9 +312,8 @@ knitr::kable(
   digits = 4
 )
 ```
-### Further research? (hypothesis testing, regression, ANOVA, or machine learning)
 
-\
+### Further Investigation
 
 ### Supporting research
 
