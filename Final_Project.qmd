@@ -1,7 +1,17 @@
 ---
-title: "Final Project"
-format: pdf
+title: "Student Lifestyle Factors and their Effects"
+author: "Jonas Priolo, Will Bolger, Alex Herraiz Sen"
 editor: visual
+date: "April 25, 2025"
+date-modified: now
+format: pdf
+bibliography: references.bib
+nocite: |
+  @*
+csl: MLA9.csl
+execute:
+  echo: false
+  warning: false
 ---
 
 ```{r}
@@ -17,27 +27,116 @@ library(tidyverse)
 
 ```{r}
 #| label: load_data
+#Primary Dataset
 student_raw <-  read.csv(
-  "https://raw.githubusercontent.com/Stat184-Spring2025/Sec4_FP_JonasP_WillB_AlexH/refs/heads/main/student_lifestyle_dataset..csv",
+  "https://raw.githubusercontent.com/Stat184-Spring2025/Sec4_FP_JonasP_WillB_AlexH/refs/heads/main/data_folder/student_lifestyle_dataset..csv",
   sep = ","
 )
+#Supplementary Dataset
+mental_health_raw <- read.csv(
+  "https://raw.githubusercontent.com/Stat184-Spring2025/Sec4_FP_JonasP_WillB_AlexH/refs/heads/main/data_folder/Processed.csv",
+  sep = ","
+)
+
 ```
 
 ```{r}
-#| label: GPA to 4.0 scale
+#| label: GPA to 4.0 scale for primary dataset
+#Converts the provided 10 point GPA scale to a 4 point scale for the primary dataset
 student_4 <- student_raw %>%
   mutate(Grades = Grades * (4/10)) 
 ```
 
-=======
+# \## Introduction
 
-## Introduction
+## Research Topic: Student Lifestyle Factors and their Effects
 
-## Exploratory data Analyis
+This research focuses on Student lifestyle trends and their effects on things such as their grades and stress levels. With depression and anxiety rates being at all time highs and finals week just around the corner this subject is not only relevant to society but to everyone in our group/class. Our research revolves around gaining a better understanding on what effects student outcomes such as stress and gpa pertaining to a students daily study hours, extracurricular hours, sleep hours, social hours, and physical activity. Via researching our topic in depth, mapping our data in data sets, and by utilizing data visualizations we can explore the relations between our key attributes and student well being. Our goal is to increase our understanding of the effects of different lifestyle factors and how much they affect our lives as well as presenting our research in a way our reader could deepen their own knowledge for this topic.
+
+## Research Questions
+
+The first research question we will explore is how different lifestyle factors, such as hours spent studying, sleeping, socializing, exercising, or time spent doing extracurriculars affect both student stress levels and academic performance. We will create different visualizations to present our research findings and explain the relationships between each of our key attribute lifestyle factors and their effects. In addition to this we will also examine gender and its effects on the different items we are analyzing. We are also interested in examining a student's major and its impact on their mental health. For example, is a student who is studying an engineering related discipline more stressed or depressed then a student who is studying business? Another question we want to answer is weheter an individual who is on a scholorship has higher levels of stress compared to someone without one. For our research we will also need to be aware of potential biases we may have. All three of us are males and are pursuing STEM fields and we cant let our own experiences alter our conclusion. 
+
+## Provenance Of Our Data
+
+The data sets we are using came from the Website Kaggle, a data science website that offers open source resources and data sets with the goal to help others learn more about data. The author of our first and primary data set is Charlotte Bennett. The author describes there data as a “detailed view of student lifestyle patterns and their correlation with academic performance, represented by GPA.” The data contains detailed student survey data across a variety of student lifestyle factors, student demographics, and academic outcomes. This data was last updated 21 days ago and was sourced from a Google Form survey focusing on students across different educational institutions, primarily focusing on those in India and other South Asian countries. All in all there were 2000 voluntary participants for the survey used in the data set and the respondents were informed that the data would be used for educational purposes only. No personally identifiable information was collected for the data set. In this dataset, a case is an individual student. The dataset includes the attributes of Student ID, Study Hours per Day, Extracurricular Hours per Day, Sleep Hours Hours per Day, Social Hours per Day, Physical Activity Hours per Day, Stress Level, Gender, And Grades (CGPA). For this data set we will touch upon all of these attributes. For this data set we intend on converting the ten point GPA scale provided in the dataset, which is the standard grading scale in India and South Asia, to the four point GPA scale we are more familiar with.
+
+Our second and supplementary data set also originates from Figshare. The author of this data set is Mahbubul and he describes the data set as “a statistical research on the effects of mental health.” The data for this set was collected via survey form from students studying at the top 15 ranked universities in Bangladesh. The data set includes the attributes of a age, gender, University, major, academic year, GPA, scholarship status, answers to survey questions, student stress levels, student anxiety levels, and student depression levels. For this data set we are primarily interested in the students major, there scholarship status, and there stress level.
+
+## CARE Principles
+
+The data we are utilizing meets the CARE principles. The data can be used for the Collective benefit because it allows for us to identify what are the main factors that contribute to student well being. When properly analyzed as a society we can improve student resources and improve student mental health. This data meets the Authority to control because the data was collected via an optional survey. This means that participants had the autonomy to choose whether or not to share their experiences, ensuring respect for an individual's data and consent. The data aligns with Responsibility because it emphasizes the ethical use for this information such as prioritizing student welfare and protecting student privacy. Lastly this data is ethical with it promoting equity and positive change with its ability to inform policies to support student well-being.
+
+## Exploratory Data Analysis
+
+Before creating any data visualizations, we created a frequency that alalyise a series of statistics to better understand the relation between student stress levels and a students grades. @tbl-student_stress_summary shows a summary table that includes *count*, *minimum*, *Q1*, *median*, *Q3*, *maximum*, *median absolute deviation*, *mean*, and *standard deviation* for every stress level and student GPA. We are interested in using this data to gain a better understanding of student stress and its impacts and we thought that a students GPA was a good metric to start with.
 
 ### Frequency table
 
+```{r}
+#| label: tbl-student_stress_summary
+#| tbl-cap: "Summary Statistics on Grades by Stress Level"
+#| tbl-pos: H
+#| html-table-processing: none
+#| lst-label: lst-table1
+#| lst-cap: "Code Chunk for Making Table"
+# Make summary table for Grades by Stress Level ----
+student_stress_summary <- student_4 %>%
+  select(Stress_Level, Grades) %>%
+  group_by(Stress_Level) %>%
+  summarize(
+    count = n(),
+    min = min(Grades),
+    Q1 = quantile(Grades, 0.25),
+    median = median(Grades),
+    Q1 = quantile(Grades, 0.75),
+    max = max(Grades),
+    mad = mad(Grades),
+    mean = mean(Grades),
+    count = n(), 
+    min = min(Grades), 
+    Q1 = quantile(Grades, 0.25), 
+    median = median(Grades), 
+    Q3 = quantile(Grades, 0.75), 
+    max = max(Grades), 
+    mad = mad(Grades), 
+    mean = mean(Grades), 
+    sd = sd(Grades)
+  )
+student_stress_summary %>%
+  knitr::kable()
+```
+
+From the summery table we can get a better understanding of the data we are working with. If we look at the *count* column we can see that the highest stress level among students is High, followed by Moderate, then low. It was also interesting to see how stress level impacted the various statistics in relation to a students GPA. From the table we were able to find out that there is a relation between a students stress level and GPA with higher levels of stress being related to higher GPAs. We also found it interesting how students with low stress typically had lower GPAs, signaling that caring about your grades makes you more stressed and vice versa.
+
 ### Frequency graphs
+
+```{r}
+#| label: gpa-stress_plot
+#| fig-cap: "Student GPAs by stress level"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Box and wisker plot showin student GPA by stress level"
+#| lst-label: lst-gpa-stress
+#| lst-cap: "Code Chunk for GPA Stress Plot"
+#relevels stress level by low, moderate, high
+student_4$Stress_Level <- fct_relevel(student_4$Stress_Level, "Low", "Moderate", "High")
+
+#generates box and whisker plot
+ggplot(
+  student_4,
+  aes(
+    x = Stress_Level,
+    y = Grades,
+    fill = Stress_Level
+  )
+) +
+  geom_boxplot(fill = "lightblue", color = "black") +
+  labs(title = "Student GPAs by Stress level", x = "Student Stress Level", y = "Student GPAs (4.0 scale)") +
+  theme_minimal()
+```
+
+The Box and Whisker plot @gpa-stress_plot allows us to confirm what we learned about the relationship between a students stress level and there GPA from our summery table. The plot visuly displays the distributions for each stress level by showing the median, upper and lower quartiles, and any outlier points. From this plot we are able to able to verify that studends with higher levels of stress tend to have higher GPAs, while those with lower stress levels tend to have lower GPAs. This reinforces the positive relation observed in the data.
 
 ## Main Analysis
 
@@ -50,6 +149,221 @@ student_4 <- student_raw %>%
 \
 
 ### Supporting research
+
+```{r}
+#| label: Cleans/wrangles supplementary dataset
+
+#Cleans/wrangles supplementary dataset by selecting useful columns and renaiming/mutating case names and column names
+mental_health_clean <- mental_health_raw %>%
+  select(1, 2, 3, 4, 7, 19, 28, 39) %>%
+  rename(
+    major = Department,
+    stress_level = Stress.Label,
+    anxiety_level = Anxiety.Label,
+    depression_level = Depression.Label
+  ) %>%
+  mutate(
+    stress_level = case_when(
+      stress_level == "High Perceived Stress" ~ "High",
+      stress_level == "Moderate Stress" ~ "Moderate",
+      stress_level == "Low Stress" ~ "Low",
+      TRUE ~ stress_level
+    )
+  ) %>%
+  mutate(
+    major = case_when(
+      str_detect(major, "Similar to CS") ~ "Computer Science/Engineering",
+      str_detect(major, "Similar to EEE") ~ "Electrical Engineering",
+      str_detect(major, "Similar to ME") ~ "Mechanical Engineering",
+      str_detect(major, "Similar to CE") ~ "Civil Engineering",
+      TRUE ~ major
+    )
+  )
+
+```
+
+```{r}
+#| label: scholarship-stress_plot
+#| fig-cap: "stress level by student scholarship status"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Bar chart showing number of students and scholorsip status"
+#| lst-label: lst-scholarship-stress
+#| lst-cap: "Code Chunk for Scholarship Stress Plot"
+
+#generates a bar chart 
+ggplot(mental_health_clean, aes(x = stress_level, fill = as.factor(waiver_or_scholarship))) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Stress Level by Scholarship Status",
+    x = "Stress Level",
+    y = "Num of Students",
+    fill = "Scholarship or Waiver Received"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("#1f77b4", "#ff7f0e"),
+                    labels = c("No Scholarship/Waiver", "Received Scholarship/Waiver"))
+```
+
+@scholarship-stress_plot shows for all stress levels that stress levels do not have a direct relationship with weather a student has a scholarship or not. We were surprised to see that there was not as large of a positive relations as we thought. This plot leads us to believe that scholarship status/waiver status is not a primary factor in determining student stress level.
+
+The following visualizations we will create two plots for each mental health disorder we analyse. One visualization will include the data for students enrolled in the computer science/ computer engineering major and one will not include the data. The reason for this is due to the data set we used had a majority of students enrolled as that major and generating two visualizations allows us to better analyse and comment on the data.
+
+```{r}
+student_no_CS <- mental_health_clean %>%
+  filter(major != "Computer Science/Engineering")
+```
+
+```{r}
+#| label: major-stress_plot
+#| fig-cap: "stress level by major"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Bar chart showing number of students and stress level per major"
+#| lst-label: lst-stress
+#| lst-cap: "Code Chunk for major Stress Plot"
+
+#re levels stress levels so that they are in order
+mental_health_clean$stress_level <- fct_relevel(mental_health_clean$stress_level, "Low", "Moderate", "High")
+
+#generates  bar plot
+ggplot(mental_health_clean, aes(x = major, fill = stress_level)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Stress Level Across Majors",
+    x = "Major",
+    y = "Number of Students"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+#| label: no-cs-stress_plot
+#| fig-cap: "stress level by majors except for CS/CE"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Bar chart showing number of students and stress level by majors except for CS/CE"
+#| lst-label: lst-stress_noCS
+#| lst-cap: "Code Chunk for majors except for CS/CE Stress Plot"
+
+#re levels stress levels so that they are in order
+student_no_CS$stress_level <- fct_relevel(student_no_CS$stress_level, "Low", "Moderate", "High")
+
+#generates bar plot
+ggplot(student_no_CS, aes(x = major, fill = stress_level)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Stress Level Across Majors except for CS/CE",
+    x = "Major",
+    y = "Number of Students"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+From @major-stress_plot and @no-cs-stress_plot we are able to learn how a students major effects there stress level. From the visualizations we are able to learn that students majoring in Civil or electrical engineering typically have higher levels of stress compared to all other majors. We are also able to see that most students perceive them selves as having moderate amounts of stress along most majors. This visualization made sense to us due to majors such as Electrical/Civil engineering are typacly seen as harder STEM major, thus causing more stress. It was interesting to see however other STEM majors such as mechanical engineering and Computer science/engineering deviate from the other engineering majors.
+
+```{r}
+#| label: major-depression_plot
+#| fig-cap: "depression level by major"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Bar chart showing number of students and depression level per major"
+#| lst-label: lst-depression
+#| lst-cap: "Code Chunk for major depression Plot"
+
+#re levels depression levels so that they are in order
+mental_health_clean$depression_level <- fct_relevel(mental_health_clean$depression_level, "No Depression", "Minimal Depression", "Mild Depression", "Moderate Depression", "Moderately Severe Depression", "Severe Depression")
+
+#generates bar plot
+ggplot(mental_health_clean, aes(x = major, fill = depression_level)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Depression Level Across Majors",
+    x = "Major",
+    y = "Number of Students"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+#| label: no-cs-depression_plot
+#| fig-cap: "depression level by majors except for CS/CE"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Bar chart showing number of students and depression level by majors except for CS/CE"
+#| lst-label: lst-depression_noCS
+#| lst-cap: "Code Chunk for majors except for CS/CE depression Plot"
+
+
+#re levels depression levels so that they are in order
+student_no_CS$depression_level <- fct_relevel(student_no_CS$depression_level, "No Depression", "Minimal Depression", "Mild Depression", "Moderate Depression", "Moderately Severe Depression", "Severe Depression")
+
+#generates bar plot
+ggplot(student_no_CS, aes(x = major, fill = depression_level)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Depression Level Across Majors except for CS/CE",
+    x = "Major",
+    y = "Number of students"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+From @major-depression_plot and @no-cs-depression_plot we are able to learn how a students major effects there depression level. From these visualizations we were able to find out that students studding business and entrepreneurship studies had the highest levels of depression out of all the various majors. This surprised us due to us believing that all the various mental health would all have the similar distributions among the various majors.
+
+```{r}
+#| label: major-anxiety_plot
+#| fig-cap: "anxiety level by major"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Bar chart showing number of students and anxiety level per major"
+#| lst-label: lst-anxiety
+#| lst-cap: "Code Chunk for major anxiety Plot"
+
+#re levels anxiety levels so that they are in order
+mental_health_clean$anxiety_level <- fct_relevel(mental_health_clean$anxiety_level, "Minimal Anxiety", "Mild Anxiety", "Moderate Anxiety", "Severe Anxiety")
+
+#generates bar plot
+ggplot(mental_health_clean, aes(x = major, fill = anxiety_level)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Anxiety Level Across Majors",
+    x = "Major",
+    y = "Number of Students"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+#| label: no-cs-anxiety_plot
+#| fig-cap: "depression level by majors except for CS/CE"
+#| fig-pos: H
+#| fig-height: 6
+#| fig-alt: "Bar chart showing number of students and depression level by majors except for CS/CE"
+#| lst-label: lst-anxiety_noCS
+#| lst-cap: "Code Chunk for majors except for CS/CE depression Plot"
+
+#re levels anxiety levels so that they are in order
+student_no_CS$anxiety_level <- fct_relevel(student_no_CS$anxiety_level, "Minimal Anxiety", "Mild Anxiety", "Moderate Anxiety", "Severe Anxiety")
+
+#generates bar plot
+ggplot(student_no_CS, aes(x = major, fill = anxiety_level)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Anxiety Level Across Majors except for CS/CE",
+    x = "Major",
+    y = "Number of Students"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+From @major-anxiety_plot and @no-cs-anxiety_plot we are able to learn how a students major effects there anxiety level. From this graphic we are able to see that for the majority of majors a plurality of students have severe anxiety. The two majors with the highest levels of severe anxiety were civil engineering and electrical engineering. This relation show there being a greater relation between a students stress and there anxiety compared to a students stress and depression or there anxiety and depression. Another interesting observation is that students studding Environmental and Life Sciences are the only group who has multiple levels of measured anxiety to have higher levels of moderate anxiety compared to severe anxiety. From this knowledge we potentionaly apply what students do for that major towards majors with higher levels of anxiety.
 
 ### Conclusion
 
